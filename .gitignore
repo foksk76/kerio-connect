@@ -1,0 +1,7 @@
+.env
+*.log
+*.pid
+.DS_Store
+artifacts/*.deb
+artifacts/*.rpm
+

@@ -1,0 +1,41 @@
+services:
+  kerio-connect:
+    build:
+      context: .
+    container_name: ${CONTAINER_NAME:-kerio-connect-lab}
+    hostname: ${KERIO_HOSTNAME:-kerio-connect}
+    restart: unless-stopped
+    environment:
+      KERIO_HOME: /opt/kerio/mailserver
+      KERIO_STATE_ROOT: /var/lib/kerio/state
+      KERIO_STORE_ROOT: /var/lib/kerio/store
+      KERIO_LOG_ROOT: ${KERIO_LOG_ROOT:-/opt/kerio/logs}
+    ports:
+      - "${KERIO_ADMIN_PORT:-4040}:4040"
+      - "${KERIO_HTTPS_PORT:-443}:443"
+      - "${KERIO_SMTP_PORT:-25}:25"
+      - "${KERIO_SMTPS_PORT:-465}:465"
+      - "${KERIO_SUBMISSION_PORT:-587}:587"
+      - "${KERIO_IMAPS_PORT:-993}:993"
+      - "${KERIO_POP3S_PORT:-995}:995"
+    mem_limit: ${KERIO_MEMORY_LIMIT:-4g}
+    cpus: ${KERIO_CPUS:-2.0}
+    volumes:
+      - kerio_state:/var/lib/kerio/state
+      - kerio_store:/var/lib/kerio/store
+      - kerio_logs:${KERIO_LOG_ROOT:-/opt/kerio/logs}
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 120s
+
+volumes:
+  kerio_state:
+    name: ${KERIO_STATE_VOLUME:-kerio_state}
+  kerio_store:
+    name: ${KERIO_STORE_VOLUME:-kerio_store}
+  kerio_logs:
+    name: ${KERIO_LOGS_VOLUME:-kerio_logs}
+
