@@ -2,152 +2,72 @@
 
 ## Purpose
 
-This file captures the current state of the Kerio Connect lab repository so work can continue cleanly in another chat or on another SSH host.
+This file captures the current working state of the Kerio Connect lab repository so work can resume quickly in another chat, shell, or host session.
 
-## Current Status
+## Current Snapshot
 
-- A new local repository was created at [`/root/kerio-connect-lab`](/root/kerio-connect-lab).
-- `git` was initialized and the branch was renamed to `main`.
-- The earlier ELK test stack in [`/root/kerio-logstash-project`](/root/kerio-logstash-project) was shut down before switching focus.
-- No Kerio image build was run yet because the official Kerio Connect Debian installer is still missing from `artifacts/`.
-- The user later said the project was moved to remote SSH host `10.4.29.71` at `/root/kerio-connect`, but this session did not have that path mounted yet.
+- Updated: 2026-04-03 16:09:31 UTC
+- Repository: `/root/kerio-connect`
+- Branch: `main`
+- Base HEAD: `acc373c` - Add handoff and next steps docs
+- Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
+- Kerio image: `kerio-connect-kerio-connect:latest 998MB`
+- Postfix service: `inactive`
+- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=25435,fd=4))`
 
-## Decisions Already Made
+## Compose Status
 
-- Target packaging model: local Docker lab wrapper around the official Kerio Connect Linux installer.
-- Target distro inside the image: `Debian 13`.
-- Repository should include `README`, `CHANGELOG`, Docker assets, helper scripts, and an artifact drop folder.
-- `README` must include:
-  - VM requirements
-  - official first-run scenario
-  - official Syslog scenario as the next step after first-run
-- Log path goal: move logs away from the default Kerio path to `/opt/kerio/logs`.
-- Because the exact `mailserver.cfg` XML structure is not fully documented, the implementation uses:
-  - a best-effort XML update
-  - a symlink fallback from the default Kerio logs location
+- `kerio-connect`: Up 17 minutes (healthy), health `healthy`
 
-## What Was Created
+## Pending Change Areas
 
-- [`.env.example`](/root/kerio-connect-lab/.env.example)
-- [`.gitignore`](/root/kerio-connect-lab/.gitignore)
-- [`CHANGELOG.md`](/root/kerio-connect-lab/CHANGELOG.md)
-- [`Dockerfile`](/root/kerio-connect-lab/Dockerfile)
-- [`docker-compose.yml`](/root/kerio-connect-lab/docker-compose.yml)
-- [`README.md`](/root/kerio-connect-lab/README.md)
-- [`HANDOFF.md`](/root/kerio-connect-lab/HANDOFF.md)
-- [`artifacts/.gitignore`](/root/kerio-connect-lab/artifacts/.gitignore)
-- [`scripts/entrypoint.sh`](/root/kerio-connect-lab/scripts/entrypoint.sh)
-- [`scripts/healthcheck.sh`](/root/kerio-connect-lab/scripts/healthcheck.sh)
-- [`scripts/seed-state.sh`](/root/kerio-connect-lab/scripts/seed-state.sh)
-- [`scripts/configure-log-root.sh`](/root/kerio-connect-lab/scripts/configure-log-root.sh)
+- Commit-time doc automation updated.
+- Build and runtime configuration changed.
+- Project documentation refreshed.
 
-## What The Files Do
+## Pending Source Files
 
-- [`Dockerfile`](/root/kerio-connect-lab/Dockerfile)
-  Builds from `debian:13`, expects the official Kerio `.deb` in `artifacts/`, installs helper packages, then installs Kerio Connect.
+- `.env.example`
+- `.githooks/pre-commit`
+- `Dockerfile`
+- `README.md`
+- `docker-compose.yml`
+- `scripts/enable-git-hooks.sh`
+- `scripts/update-commit-docs.sh`
 
-- [`docker-compose.yml`](/root/kerio-connect-lab/docker-compose.yml)
-  Runs one `kerio-connect` service with exposed admin and mail ports, named volumes, memory/CPU limits, and a healthcheck.
+## Pending Diffstat
 
-- [`scripts/entrypoint.sh`](/root/kerio-connect-lab/scripts/entrypoint.sh)
-  Seeds persistent state, tries to re-point the log root, starts Kerio through `/etc/init.d/kerio-connect`, and keeps the container alive while the service is up.
+ 7 files changed, 418 insertions(+), 15 deletions(-)
 
-- [`scripts/seed-state.sh`](/root/kerio-connect-lab/scripts/seed-state.sh)
-  Persists config files, license directory, and message store without hiding the whole installed Kerio tree behind a volume.
-
-- [`scripts/configure-log-root.sh`](/root/kerio-connect-lab/scripts/configure-log-root.sh)
-  Uses `xmlstarlet` to try to patch `LogGlobal -> RelativePathsRoot` in `mailserver.cfg`.
-
-- [`scripts/healthcheck.sh`](/root/kerio-connect-lab/scripts/healthcheck.sh)
-  Probes the admin HTTPS endpoint and falls back to service status.
-
-- [`README.md`](/root/kerio-connect-lab/README.md)
-  Documents the lab goal, VM requirements, build/start steps, official first-run flow, official Syslog flow, log-path notes, and limitations.
-
-## Validation Already Done
-
-- `bash -n` passed for all scripts.
-- `docker compose config` passed for the repository.
-- The repository layout exists and is internally consistent.
-
-## Important Assumptions
-
-- The Kerio package on Debian 13 still provides `/etc/init.d/kerio-connect`.
-- The package installs into `/opt/kerio/mailserver`.
-- `mailserver.cfg` exists at `/opt/kerio/mailserver/mailserver.cfg`.
-- The documented `RelativePathsRoot` field is still the right place to influence Kerio log storage.
-
-These are reasonable assumptions from the vendor docs, but they still need to be verified against the actual installed package.
-
-## Known Risks / Follow-Up Items
-
-1. GFI documents Linux package installs and virtual appliances, but not Docker as an official deployment model.
-2. The Kerio `.deb` may have additional runtime dependencies not discovered until the first build.
-3. The exact XML shape in `mailserver.cfg` may differ from the helper script's assumptions.
-4. The init script name or service control path may differ on the real package version.
-5. `host.docker.internal` may not resolve on all Linux Docker hosts; Syslog targeting may need `extra_hosts`, a bridge IP, or a real network address.
-6. Volume layout may need adjustment after the first successful install if Kerio writes to more directories than currently expected.
-
-## Next Steps On The New Host
-
-When work resumes on `10.4.29.71:/root/kerio-connect`:
-
-1. Copy or recreate this repository at `/root/kerio-connect`.
-2. Put the official Kerio Connect Debian installer into `artifacts/`.
-3. Create `.env` from [`.env.example`](/root/kerio-connect-lab/.env.example) if port or resource overrides are needed.
-4. Run:
-
-```bash
-docker compose build
-docker compose up -d
+```
+ .env.example                  |  13 +-
+ .githooks/pre-commit          |   6 +
+ Dockerfile                    |  59 ++++++++-
+ README.md                     |  47 +++++--
+ docker-compose.yml            |   6 +-
+ scripts/enable-git-hooks.sh   |   6 +
+ scripts/update-commit-docs.sh | 296 ++++++++++++++++++++++++++++++++++++++++++
+ 7 files changed, 418 insertions(+), 15 deletions(-)
 ```
 
-5. Verify whether `/etc/init.d/kerio-connect` actually exists inside the built image.
-6. Verify where the package really places:
-   - `mailserver.cfg`
-   - `users.cfg`
-   - `license/`
-   - `store/`
-   - default logs
-7. If needed, adjust [`scripts/seed-state.sh`](/root/kerio-connect-lab/scripts/seed-state.sh) and [`scripts/configure-log-root.sh`](/root/kerio-connect-lab/scripts/configure-log-root.sh) to match the real package layout.
-8. Open `https://<host>:4040/admin` and complete the official first-run wizard.
-9. In Kerio Connect Administration, enable external Syslog logging and point it at the Logstash receiver.
-10. Validate that syslog messages arrive in the neighboring Logstash stack.
+## Resume Notes
 
-## Suggested First Commands On The New Host
+1. The build now auto-resolves the official Kerio Linux DEB from the public Kerio archive, with local `artifacts/` and explicit `KERIO_DOWNLOAD_URL` overrides still supported.
+2. The current container was able to reach `cdn.kerio.com` and `appmanager.gfi.com`, and the image build completed successfully on this host.
+3. The current runtime path still needs normal first-run verification inside Kerio Connect Administration after the initial wizard is completed.
+4. Commit-time automation for `HANDOFF.md`, `NEXT_STEPS.md`, and `CHANGELOG.md` lives in `scripts/update-commit-docs.sh` and is triggered by `.githooks/pre-commit`.
+
+## Suggested Resume Commands
 
 ```bash
 cd /root/kerio-connect
 git status
-ls -la
-ls -la artifacts
-docker compose build
-docker compose up -d
-docker compose logs --tail=200
+docker compose ps
+docker compose logs --tail=200 kerio-connect
 ```
 
-## Official Sources Used
+## Official Hosts
 
-- Kerio Connect system requirements:
-  - https://support.kerioconnect.gfi.com/article/112061-kerio-connect-server-system-installation-requirements
-  - https://support.gfi.com/article/110673-kerio-connect-server-system-requirements
-
-- Installing on Debian/Ubuntu:
-  - https://support.kerioconnect.gfi.com/article/112195-installing-kerio-connect-server-on-linux-debian-ubuntu
-
-- First-run configuration:
-  - https://support.gfi.com/article/110739-initial-configuration-of-kerio-connect-after-installation
-  - https://manuals.gfi.com/en/kerio/connect/content/installation-and-upgrade/performing-initial-configuration-in-kerio-connect-1567.html
-
-- Admin access / remote admin ports:
-  - https://manuals.gfi.com/en/kerio/connect/content/server-configuration/accessing-kerio-connect-administration-1161.html
-  - https://manuals.gfi.com/en/kerio/connect/content/server-configuration/administration/what-ports-are-used-by-kerio-connect-for-remote-administration-442.html
-
-- Syslog and log settings:
-  - https://support.kerioconnect.gfi.com/article/114245-syslog-logging-in-kerio-connect
-  - https://support.kerioconnect.gfi.com/en-us/article/114385-configuring-log-settings-in-kerio-connect
-  - https://manuals.gfi.com/en/kerio/connect/content/server-configuration/managing-logs-in-kerio-connect-1126.html
-
-- Editing system paths and `mailserver.cfg`:
-  - https://support.kerioconnect.gfi.com/en-us/article/114340-editing-kerio-connect-configurations-to-use-the-correct-system-paths
-  - https://support.kerioconnect.gfi.com/article/114788-modifying-the-mailserver-cfg
+- https://cdn.kerio.com/
+- https://appmanager.gfi.com/
+- https://support.kerioconnect.gfi.com/

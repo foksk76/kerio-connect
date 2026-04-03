@@ -2,6 +2,11 @@ services:
   kerio-connect:
     build:
       context: .
+      args:
+        KERIO_AUTO_DOWNLOAD: ${KERIO_AUTO_DOWNLOAD:-1}
+        KERIO_VERSION_LABEL: ${KERIO_VERSION_LABEL:-}
+        KERIO_DOWNLOAD_URL: ${KERIO_DOWNLOAD_URL:-}
+        KERIO_DOWNLOAD_SHA256: ${KERIO_DOWNLOAD_SHA256:-}
     container_name: ${CONTAINER_NAME:-kerio-connect-lab}
     hostname: ${KERIO_HOSTNAME:-kerio-connect}
     restart: unless-stopped
@@ -38,4 +43,3 @@ volumes:
     name: ${KERIO_STORE_VOLUME:-kerio_store}
   kerio_logs:
     name: ${KERIO_LOGS_VOLUME:-kerio_logs}
-

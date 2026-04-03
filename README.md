@@ -35,41 +35,67 @@ The vendor minimum is enough to start small lab instances, but the higher recomm
 
 ## What You Need Before Build
 
-1. Download the official Kerio Connect Debian installer from GFI.
-2. Place the `.deb` file in [`artifacts/`](artifacts/).
-3. Create a local `.env` from [`.env.example`](.env.example) if you want to override ports, limits, or volume names.
+1. Create a local `.env` from [`.env.example`](.env.example) if you want to override ports, limits, or volume names.
+2. Choose how the build should get the official Kerio Connect Debian installer:
+   - leave `KERIO_AUTO_DOWNLOAD=1` to resolve the latest public Linux DEB from the official Kerio archive automatically
+   - or place a `.deb` file in [`artifacts/`](artifacts/) for an offline or pinned build
+   - or set `KERIO_DOWNLOAD_URL` to an explicit official Linux DEB URL
+3. If you need reproducibility, set `KERIO_VERSION_LABEL` and optionally `KERIO_DOWNLOAD_SHA256`.
 
 Official installer guidance:
 
 - https://support.kerioconnect.gfi.com/article/112195-installing-kerio-connect-server-on-linux-debian-ubuntu
+- https://cdn.kerio.com/archive/index.php?type=source
+
+## Official Download Hosts
+
+Use the official vendor hosts below for generic download entry points and installer retrieval. These are intentionally host-level links, without version-pinned paths:
+
+- https://cdn.kerio.com/
+- https://appmanager.gfi.com/
+- https://support.kerioconnect.gfi.com/
 
 ## Repository Layout
 
-- [`Dockerfile`](Dockerfile): Debian 13 image plus Kerio install wrapper.
+- [`Dockerfile`](Dockerfile): Debian 13 image plus Kerio install wrapper with official-archive auto-download and local artifact fallback.
 - [`docker-compose.yml`](docker-compose.yml): local lab runtime with volumes, ports, and healthcheck.
+- [`.githooks/pre-commit`](.githooks/pre-commit): auto-refreshes `HANDOFF.md`, `NEXT_STEPS.md`, and `CHANGELOG.md` before each commit.
 - [`scripts/entrypoint.sh`](scripts/entrypoint.sh): container start logic.
 - [`scripts/seed-state.sh`](scripts/seed-state.sh): persists config and store paths without covering the whole install tree.
 - [`scripts/configure-log-root.sh`](scripts/configure-log-root.sh): best-effort log-root patch for `mailserver.cfg`.
 - [`scripts/healthcheck.sh`](scripts/healthcheck.sh): probes the admin endpoint or service status.
+- [`scripts/update-commit-docs.sh`](scripts/update-commit-docs.sh): generates commit-time snapshots for `HANDOFF.md`, `NEXT_STEPS.md`, and `CHANGELOG.md`.
+- [`scripts/enable-git-hooks.sh`](scripts/enable-git-hooks.sh): configures `core.hooksPath=.githooks` for the local clone.
 - [`CHANGELOG.md`](CHANGELOG.md): local project history.
 
 ## Quick Start
 
-1. Put the official Kerio Connect `.deb` installer in [`artifacts/`](artifacts/).
-2. Review [`.env.example`](.env.example) and create `.env` if needed.
-3. Build the image:
+1. Review [`.env.example`](.env.example) and create `.env` if needed.
+2. Decide whether to:
+   - use automatic download from the official Kerio archive
+   - pin a specific archive version through `KERIO_VERSION_LABEL`
+   - override the exact official DEB URL through `KERIO_DOWNLOAD_URL`
+   - or place a local `.deb` in [`artifacts/`](artifacts/)
+3. If the host already runs a local MTA on port `25`, stop it before starting the lab. On this Debian host the conflicting service was `postfix`:
+
+```bash
+systemctl stop postfix
+ss -ltnp '( sport = :25 )'
+```
+
+4. Build the image:
 
 ```bash
 docker compose build
 ```
 
-4. Start the lab:
+5. Start the lab:
 
 ```bash
 docker compose up -d
 ```
 
-5. Open `https://localhost:4040/admin`.
+6. Open `https://localhost:4040/admin`.
 
 ## Official First-Run Scenario
 
@@ -145,7 +171,8 @@ Then verify:
 
 ## Limitations
 
-- This repository does not ship the Kerio installer; you must provide the official `.deb`.
+- This repository does not ship the Kerio installer; builds either download the official Linux DEB from the public Kerio archive or use a local `.deb` that you provide.
 - The runtime model is a lab wrapper around the Linux package, not an officially documented Docker deployment.
 - The `mailserver.cfg` XML schema is not documented in detail by GFI, so automatic log-root patching is intentionally conservative.
+- Automatic download depends on the current Kerio archive HTML structure and CDN availability, so local artifacts or pinned URLs are still the safer choice for reproducible builds.
 - Production use should prefer the vendor-supported Linux or virtual-appliance installation paths.
