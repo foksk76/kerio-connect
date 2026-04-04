@@ -6,10 +6,10 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-04-04 08:46:46 UTC
+- Updated: 2026-04-04 09:32:58 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `fd14ab7` - Curate changelog history and stop auto-overwriting it
+- Base HEAD: `cfc2abd` - Curate changelog history and stop auto-overwriting it
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 1GB`
 - Postfix service: `inactive`
@@ -24,26 +24,33 @@ This file captures the current working state of the Kerio Connect lab repository
 - Message store: `/opt/kerio/mailserver/store/`
 - License note: `Built-in trial link points to the legacy kerio.com trial URL and currently returns HTTP 404; use the manual GFI Free Trial URL from README.md.`
 - DNS note: `HomeLab DNS publishes kerio.lo as an internal A record only; no MX record is expected in this lab. External GFI hosts still resolve from inside the container, so the telemetry DNS warning is tracked separately.`
+- Syslog note: `External Syslog is enabled for mail, operations, security, spam, and audit to elastic.lo:5514 with application name kerio.`
 
 ## Compose Status
 
-- `kerio-connect`: Up 29 minutes (healthy), health `healthy`
+- `kerio-connect`: Up About an hour (healthy), health `healthy`
 
 ## Pending Change Areas
 
+- Commit-time doc automation updated.
+- Build and runtime configuration changed.
 - Project documentation refreshed.
 
 ## Pending Source Files
 
+- `.lab-state.env`
 - `CHANGELOG.md`
+- `scripts/update-commit-docs.sh`
 
 ## Pending Diffstat
 
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ 3 files changed, 37 insertions(+), 3 deletions(-)
 
 ```
- CHANGELOG.md | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .lab-state.env                |  1 +
+ CHANGELOG.md                  | 27 +++++++++++++++++++++++++--
+ scripts/update-commit-docs.sh | 12 +++++++++++-
+ 3 files changed, 37 insertions(+), 3 deletions(-)
 ```
 
 ## Resume Notes

@@ -21,6 +21,7 @@ kerio_message_store="${KERIO_MESSAGE_STORE:-}"
 kerio_admin_account="${KERIO_ADMIN_ACCOUNT:-}"
 kerio_license_note="${KERIO_LICENSE_NOTE:-}"
 kerio_dns_note="${KERIO_DNS_NOTE:-}"
+kerio_syslog_note="${KERIO_SYSLOG_NOTE:-}"
 
 if git rev-parse --verify HEAD >/dev/null 2>&1; then
   head_short="$(git rev-parse --short HEAD)"
@@ -180,6 +181,9 @@ render_runtime_lines() {
   if [ -n "${kerio_dns_note}" ]; then
     printf -- '- DNS note: `%s`\n' "${kerio_dns_note}"
   fi
+  if [ -n "${kerio_syslog_note}" ]; then
+    printf -- '- Syslog note: `%s`\n' "${kerio_syslog_note}"
+  fi
 }
 
 if [ "${kerio_first_run_status}" = "completed" ] && [ -n "${kerio_admin_account}" ]; then
@@ -204,6 +208,12 @@ if [ -n "${kerio_license_note}" ]; then
   third_step="${kerio_license_note}"
 else
   third_step="If you need a trial or temporary license, use the manual GFI Free Trial flow documented in \`README.md\`."
+fi
+
+if [ -n "${kerio_syslog_note}" ]; then
+  sixth_step="Verify remote Syslog delivery for \`mail\`, \`operations\`, \`security\`, \`spam\`, and \`audit\` on \`elastic.lo:5514\` with application name \`kerio\`."
+else
+  sixth_step="Enable external Syslog logging in Kerio Connect Administration and point it at the Logstash receiver once the wizard is complete."
 fi
 
 cat > "${repo_root}/HANDOFF.md" <<EOF
@@ -301,7 +311,7 @@ $(printf '%s\n' "${compose_lines}")
    - \`/opt/kerio/mailserver/license\`
    - \`/opt/kerio/mailserver/store\`
 5. Confirm that \`scripts/configure-log-root.sh\` still matches the real \`mailserver.cfg\` shape and that logs can be redirected to \`/opt/kerio/logs\`.
-6. Enable external Syslog logging in Kerio Connect Administration and point it at the Logstash receiver once the wizard is complete.
+6. ${sixth_step}
 
 ## Commit Automation
 

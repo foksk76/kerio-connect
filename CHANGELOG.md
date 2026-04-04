@@ -5,10 +5,33 @@ It records releases, major repository changes, fixed bugs, operational milestone
 
 ## Unreleased
 
+No unreleased changes are recorded yet.
+
+## v0.1.0 - 2026-04-04
+
+First stable release of the Debian 13 / Docker-based Kerio Connect lab.
+
 ### Changed
 
-- `CHANGELOG.md` is now curated manually as a history of releases, fixes, new features, and lab milestones.
-- Commit-time automation no longer rewrites `CHANGELOG.md`; `.githooks/pre-commit` now refreshes only `HANDOFF.md` and `NEXT_STEPS.md`.
+- `CHANGELOG.md` is now curated manually as a running journal of releases, fixed bugs, new features, and operational milestones.
+- Commit-time automation now refreshes only `HANDOFF.md` and `NEXT_STEPS.md`, leaving the changelog under manual release control.
+- Runtime state tracking now records the active external Syslog setup so generated handoff and next-step docs reflect the actual lab status.
+
+### Fixed
+
+- `NEXT_STEPS.md` now stops asking operators to enable Syslog after it is already configured and instead prompts them to verify remote delivery.
+
+### Operational Milestones
+
+- First-run setup completed successfully for `kerio.lo`.
+- Administrative mailbox `doge@kerio.lo` was created and retained across restarts.
+- Trial licensing survived restart and the lab now starts in a registered state.
+- External Syslog was enabled for `mail`, `operations`, `security`, `spam`, and `audit` to `elastic.lo:5514` with application name `kerio`.
+- End-to-end local mail delivery was validated with a test message delivered to `doge@kerio.lo`.
+
+### Related Commits
+
+- `cfc2abd` Curate changelog history and stop auto-overwriting it
 
 ## v0.1.0-alpha.1 - 2026-04-04
 
