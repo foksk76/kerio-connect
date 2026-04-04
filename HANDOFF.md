@@ -6,10 +6,10 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-04-04 08:23:00 UTC
+- Updated: 2026-04-04 08:46:46 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `8f3a95b` - Automate commit-time project status docs
+- Base HEAD: `fd14ab7` - Curate changelog history and stop auto-overwriting it
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 1GB`
 - Postfix service: `inactive`
@@ -27,41 +27,23 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Compose Status
 
-- `kerio-connect`: Up 5 minutes (healthy), health `healthy`
+- `kerio-connect`: Up 29 minutes (healthy), health `healthy`
 
 ## Pending Change Areas
 
-- Commit-time doc automation updated.
-- Build and runtime configuration changed.
 - Project documentation refreshed.
 
 ## Pending Source Files
 
-- `.env.example`
-- `.lab-state.env`
-- `Dockerfile`
-- `README.md`
-- `docker-compose.yml`
-- `scripts/configure-log-root.sh`
-- `scripts/entrypoint.sh`
-- `scripts/seed-state.sh`
-- `scripts/update-commit-docs.sh`
+- `CHANGELOG.md`
 
 ## Pending Diffstat
 
- 9 files changed, 112 insertions(+), 17 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 ```
- .env.example                  |  1 +
- .lab-state.env                |  7 +++++
- Dockerfile                    |  9 +++++-
- README.md                     | 27 ++++++++++++++++--
- docker-compose.yml            |  3 ++
- scripts/configure-log-root.sh | 13 +++++----
- scripts/entrypoint.sh         |  1 -
- scripts/seed-state.sh         |  4 +--
- scripts/update-commit-docs.sh | 64 +++++++++++++++++++++++++++++++++++++++----
- 9 files changed, 112 insertions(+), 17 deletions(-)
+ CHANGELOG.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 ```
 
 ## Resume Notes
@@ -69,7 +51,7 @@ This file captures the current working state of the Kerio Connect lab repository
 1. The build now auto-resolves the official Kerio Linux DEB from the public Kerio archive, with local `artifacts/` and explicit `KERIO_DOWNLOAD_URL` overrides still supported.
 2. The current container was able to reach `cdn.kerio.com` and `appmanager.gfi.com`, and the image build completed successfully on this host.
 3. Runtime milestones recorded in `.lab-state.env` are folded into this handoff so first-run progress is not lost between chats or commits.
-4. Commit-time automation for `HANDOFF.md`, `NEXT_STEPS.md`, and `CHANGELOG.md` lives in `scripts/update-commit-docs.sh` and is triggered by `.githooks/pre-commit`.
+4. Commit-time automation for `HANDOFF.md` and `NEXT_STEPS.md` lives in `scripts/update-commit-docs.sh` and is triggered by `.githooks/pre-commit`.
 
 ## Suggested Resume Commands
 

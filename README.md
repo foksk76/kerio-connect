@@ -59,14 +59,14 @@ Use the official vendor hosts below for generic download entry points and instal
 
 - [`Dockerfile`](Dockerfile): Debian 13 image plus Kerio install wrapper with official-archive auto-download and local artifact fallback.
 - [`docker-compose.yml`](docker-compose.yml): local lab runtime with volumes, ports, and healthcheck.
-- [`.githooks/pre-commit`](.githooks/pre-commit): auto-refreshes `HANDOFF.md`, `NEXT_STEPS.md`, and `CHANGELOG.md` before each commit.
+- [`.githooks/pre-commit`](.githooks/pre-commit): auto-refreshes `HANDOFF.md` and `NEXT_STEPS.md` before each commit.
 - [`scripts/entrypoint.sh`](scripts/entrypoint.sh): container start logic.
 - [`scripts/seed-state.sh`](scripts/seed-state.sh): persists config and store paths without covering the whole install tree.
 - [`scripts/configure-log-root.sh`](scripts/configure-log-root.sh): best-effort log-root patch for `mailserver.cfg`.
 - [`scripts/healthcheck.sh`](scripts/healthcheck.sh): probes the admin endpoint or service status.
-- [`scripts/update-commit-docs.sh`](scripts/update-commit-docs.sh): generates commit-time snapshots for `HANDOFF.md`, `NEXT_STEPS.md`, and `CHANGELOG.md`.
+- [`scripts/update-commit-docs.sh`](scripts/update-commit-docs.sh): generates commit-time snapshots for `HANDOFF.md` and `NEXT_STEPS.md`.
 - [`scripts/enable-git-hooks.sh`](scripts/enable-git-hooks.sh): configures `core.hooksPath=.githooks` for the local clone.
-- [`CHANGELOG.md`](CHANGELOG.md): local project history.
+- [`CHANGELOG.md`](CHANGELOG.md): curated project journal for releases, fixes, features, and operational milestones.
 
 ## Quick Start
 

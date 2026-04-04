@@ -44,7 +44,7 @@ fi
 
 mapfile -t summary_files < <(
   printf '%s\n' "${staged_files[@]}" \
-  | grep -vE '^(HANDOFF\.md|NEXT_STEPS\.md|CHANGELOG\.md)$' \
+  | grep -vE '^(HANDOFF\.md|NEXT_STEPS\.md)$' \
   || true
 )
 if [ "${#summary_files[@]}" -eq 0 ]; then
@@ -253,7 +253,7 @@ ${diffstat:-No staged diffstat available.}
 1. The build now auto-resolves the official Kerio Linux DEB from the public Kerio archive, with local \`artifacts/\` and explicit \`KERIO_DOWNLOAD_URL\` overrides still supported.
 2. The current container was able to reach \`cdn.kerio.com\` and \`appmanager.gfi.com\`, and the image build completed successfully on this host.
 3. Runtime milestones recorded in \`.lab-state.env\` are folded into this handoff so first-run progress is not lost between chats or commits.
-4. Commit-time automation for \`HANDOFF.md\`, \`NEXT_STEPS.md\`, and \`CHANGELOG.md\` lives in \`scripts/update-commit-docs.sh\` and is triggered by \`.githooks/pre-commit\`.
+4. Commit-time automation for \`HANDOFF.md\` and \`NEXT_STEPS.md\` lives in \`scripts/update-commit-docs.sh\` and is triggered by \`.githooks/pre-commit\`.
 
 ## Suggested Resume Commands
 
@@ -310,41 +310,4 @@ Run this once per clone or host to enable repository hooks:
 \`\`\`bash
 scripts/enable-git-hooks.sh
 \`\`\`
-EOF
-
-cat > "${repo_root}/CHANGELOG.md" <<EOF
-# Changelog
-
-All notable changes to this lab repository are tracked here.
-
-## Unreleased
-
-### Current Commit Snapshot
-
-- Updated: ${timestamp}
-- Branch: \`${branch}\`
-- Base HEAD: \`${head_short}\`
-- Remote: \`${remote_name:-none}\`
-
-### Change Areas
-
-$(render_change_areas)
-
-### Source Files In This Commit
-
-$(render_file_list)
-
-### Diffstat
-
-- ${shortstat:-No staged diffstat available.}
-
-\`\`\`
-${diffstat:-No staged diffstat available.}
-\`\`\`
-
-### Baseline
-
-- Debian 13 Kerio Connect lab scaffold.
-- Docker Compose wrapper, runtime scripts, and healthcheck.
-- README with VM requirements, first-run flow, Syslog notes, and commit-time doc automation.
 EOF

@@ -1,53 +1,63 @@
 # Changelog
 
-All notable changes to this lab repository are tracked here.
+This file is maintained as a project journal rather than an auto-generated diff snapshot.
+It records releases, major repository changes, fixed bugs, operational milestones, and the commits that marked those milestones.
 
 ## Unreleased
 
-### Current Commit Snapshot
+### Changed
 
-- Updated: 2026-04-04 08:23:00 UTC
-- Branch: `main`
-- Base HEAD: `8f3a95b`
-- Remote: `origin`
+- `CHANGELOG.md` is now curated manually as a history of releases, fixes, new features, and lab milestones.
+- Commit-time automation no longer rewrites `CHANGELOG.md`; `.githooks/pre-commit` now refreshes only `HANDOFF.md` and `NEXT_STEPS.md`.
 
-### Change Areas
+## v0.1.0-alpha.1 - 2026-04-04
 
-- Commit-time doc automation updated.
-- Build and runtime configuration changed.
-- Project documentation refreshed.
+First usable alpha of the Debian 13 / Docker-based Kerio Connect lab.
 
-### Source Files In This Commit
+### Added
 
-- `.env.example`
-- `.lab-state.env`
-- `Dockerfile`
-- `README.md`
-- `docker-compose.yml`
-- `scripts/configure-log-root.sh`
-- `scripts/entrypoint.sh`
-- `scripts/seed-state.sh`
-- `scripts/update-commit-docs.sh`
+- Official Kerio archive auto-download during `docker compose build`, with support for local `artifacts/` and explicit `KERIO_DOWNLOAD_URL` overrides.
+- Runtime lab-state tracking in `.lab-state.env` for first-run progress and operator notes.
+- Dedicated `kerio_license` Docker volume mapped directly to `/opt/kerio/mailserver/license`.
+- First-run documentation covering the current GFI Free Trial flow, Debian host preparation, Syslog guidance, and the recommendation to take a Proxmox backup after initial setup.
 
-### Diffstat
+### Changed
 
--  9 files changed, 112 insertions(+), 17 deletions(-)
+- Repository documentation was aligned with the renamed repository path `/root/kerio-connect`.
+- `README.md`, `HANDOFF.md`, and `NEXT_STEPS.md` were expanded to reflect the new VM, first-run workflow, and current HomeLab DNS assumptions.
 
-```
- .env.example                  |  1 +
- .lab-state.env                |  7 +++++
- Dockerfile                    |  9 +++++-
- README.md                     | 27 ++++++++++++++++--
- docker-compose.yml            |  3 ++
- scripts/configure-log-root.sh | 13 +++++----
- scripts/entrypoint.sh         |  1 -
- scripts/seed-state.sh         |  4 +--
- scripts/update-commit-docs.sh | 64 +++++++++++++++++++++++++++++++++++++++----
- 9 files changed, 112 insertions(+), 17 deletions(-)
-```
+### Fixed
 
-### Baseline
+- `scripts/configure-log-root.sh` now edits the real persistent `mailserver.cfg` target instead of breaking the symlink and losing runtime changes.
+- Repeated first-run wizard prompts after container restarts were stabilized by persisting the effective config state.
+- License activation stopped failing on `License directory /opt/kerio/mailserver/license does not exist` by replacing the old symlinked license layout with a real runtime directory backed by a dedicated Docker volume.
+- Debian locale warnings for English and Russian were fixed by generating `en_US.UTF-8` and `ru_RU.UTF-8` in the image.
+- Initial startup on the new VM no longer conflicts with the local host MTA because the host-side `postfix` conflict was identified and documented.
 
-- Debian 13 Kerio Connect lab scaffold.
-- Docker Compose wrapper, runtime scripts, and healthcheck.
-- README with VM requirements, first-run flow, Syslog notes, and commit-time doc automation.
+### Operational Milestones
+
+- Initial configuration completed for the lab domain `kerio.lo`.
+- Administrative account created: `doge@kerio.lo`.
+- Trial registration fallback was moved from the broken legacy `kerio.com` flow to the current GFI trial entry point.
+- Trial license activation was validated successfully and confirmed to survive a restart.
+- Alpha tag `v0.1.0-alpha.1` was published.
+
+### Related Commits
+
+- `574e8ab` Alpha release: stabilize first run, licensing, and persistence
+
+## Bootstrap - 2026-04-03
+
+Initial repository bootstrap and commit-time handoff automation.
+
+### Added
+
+- Base Debian 13 Kerio Connect lab scaffold with `Dockerfile`, `docker-compose.yml`, runtime scripts, and healthcheck.
+- `HANDOFF.md` and `NEXT_STEPS.md` to carry forward context between chats and hosts.
+- Git-hook driven status-doc automation through `.githooks/pre-commit`, `scripts/update-commit-docs.sh`, and `scripts/enable-git-hooks.sh`.
+
+### Related Commits
+
+- `38f3092` Initial commit
+- `acc373c` Add handoff and next steps docs
+- `8f3a95b` Automate commit-time project status docs
