@@ -6,18 +6,28 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-04-03 16:09:31 UTC
+- Updated: 2026-04-04 08:23:00 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `acc373c` - Add handoff and next steps docs
+- Base HEAD: `8f3a95b` - Automate commit-time project status docs
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
-- Kerio image: `kerio-connect-kerio-connect:latest 998MB`
+- Kerio image: `kerio-connect-kerio-connect:latest 1GB`
 - Postfix service: `inactive`
-- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=25435,fd=4))`
+- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=49412,fd=4))`
+
+## Recorded Lab State
+
+- First run: `completed`
+- Admin account: `doge@kerio.lo`
+- Primary domain: `kerio.lo`
+- Hostname: `kerio.lo`
+- Message store: `/opt/kerio/mailserver/store/`
+- License note: `Built-in trial link points to the legacy kerio.com trial URL and currently returns HTTP 404; use the manual GFI Free Trial URL from README.md.`
+- DNS note: `HomeLab DNS publishes kerio.lo as an internal A record only; no MX record is expected in this lab. External GFI hosts still resolve from inside the container, so the telemetry DNS warning is tracked separately.`
 
 ## Compose Status
 
-- `kerio-connect`: Up 17 minutes (healthy), health `healthy`
+- `kerio-connect`: Up 5 minutes (healthy), health `healthy`
 
 ## Pending Change Areas
 
@@ -28,33 +38,37 @@ This file captures the current working state of the Kerio Connect lab repository
 ## Pending Source Files
 
 - `.env.example`
-- `.githooks/pre-commit`
+- `.lab-state.env`
 - `Dockerfile`
 - `README.md`
 - `docker-compose.yml`
-- `scripts/enable-git-hooks.sh`
+- `scripts/configure-log-root.sh`
+- `scripts/entrypoint.sh`
+- `scripts/seed-state.sh`
 - `scripts/update-commit-docs.sh`
 
 ## Pending Diffstat
 
- 7 files changed, 418 insertions(+), 15 deletions(-)
+ 9 files changed, 112 insertions(+), 17 deletions(-)
 
 ```
- .env.example                  |  13 +-
- .githooks/pre-commit          |   6 +
- Dockerfile                    |  59 ++++++++-
- README.md                     |  47 +++++--
- docker-compose.yml            |   6 +-
- scripts/enable-git-hooks.sh   |   6 +
- scripts/update-commit-docs.sh | 296 ++++++++++++++++++++++++++++++++++++++++++
- 7 files changed, 418 insertions(+), 15 deletions(-)
+ .env.example                  |  1 +
+ .lab-state.env                |  7 +++++
+ Dockerfile                    |  9 +++++-
+ README.md                     | 27 ++++++++++++++++--
+ docker-compose.yml            |  3 ++
+ scripts/configure-log-root.sh | 13 +++++----
+ scripts/entrypoint.sh         |  1 -
+ scripts/seed-state.sh         |  4 +--
+ scripts/update-commit-docs.sh | 64 +++++++++++++++++++++++++++++++++++++++----
+ 9 files changed, 112 insertions(+), 17 deletions(-)
 ```
 
 ## Resume Notes
 
 1. The build now auto-resolves the official Kerio Linux DEB from the public Kerio archive, with local `artifacts/` and explicit `KERIO_DOWNLOAD_URL` overrides still supported.
 2. The current container was able to reach `cdn.kerio.com` and `appmanager.gfi.com`, and the image build completed successfully on this host.
-3. The current runtime path still needs normal first-run verification inside Kerio Connect Administration after the initial wizard is completed.
+3. Runtime milestones recorded in `.lab-state.env` are folded into this handoff so first-run progress is not lost between chats or commits.
 4. Commit-time automation for `HANDOFF.md`, `NEXT_STEPS.md`, and `CHANGELOG.md` lives in `scripts/update-commit-docs.sh` and is triggered by `.githooks/pre-commit`.
 
 ## Suggested Resume Commands

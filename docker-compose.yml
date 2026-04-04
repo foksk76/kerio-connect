@@ -28,6 +28,7 @@ services:
     volumes:
       - kerio_state:/var/lib/kerio/state
       - kerio_store:/var/lib/kerio/store
+      - kerio_license:/opt/kerio/mailserver/license
       - kerio_logs:${KERIO_LOG_ROOT:-/opt/kerio/logs}
     healthcheck:
       test: ["CMD", "/usr/local/bin/healthcheck.sh"]
@@ -41,5 +42,7 @@ volumes:
     name: ${KERIO_STATE_VOLUME:-kerio_state}
   kerio_store:
     name: ${KERIO_STORE_VOLUME:-kerio_store}
+  kerio_license:
+    name: ${KERIO_LICENSE_VOLUME:-kerio_license}
   kerio_logs:
     name: ${KERIO_LOGS_VOLUME:-kerio_logs}

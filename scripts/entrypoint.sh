@@ -23,4 +23,3 @@ done
 
 echo "Kerio Connect service is no longer running." >&2
 exit 1
-

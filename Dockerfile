@@ -11,7 +11,10 @@ ENV DEBIAN_FRONTEND=noninteractive \
     KERIO_HOME=/opt/kerio/mailserver \
     KERIO_STATE_ROOT=/var/lib/kerio/state \
     KERIO_STORE_ROOT=/var/lib/kerio/store \
-    KERIO_LOG_ROOT=/opt/kerio/logs
+    KERIO_LOG_ROOT=/opt/kerio/logs \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
@@ -25,6 +28,10 @@ RUN apt-get update \
       tini \
       wget \
       xmlstarlet \
+ && sed -i 's/^# *en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
+ && sed -i 's/^# *ru_RU.UTF-8 UTF-8/ru_RU.UTF-8 UTF-8/' /etc/locale.gen \
+ && locale-gen en_US.UTF-8 ru_RU.UTF-8 \
+ && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8 \
  && rm -rf /var/lib/apt/lists/*
 
 COPY artifacts/ /tmp/artifacts/

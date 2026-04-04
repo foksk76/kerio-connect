@@ -6,7 +6,7 @@ This repository wraps the official Kerio Connect Debian installer in a local Doc
 
 - Builds an image from the official Kerio Connect Debian installer.
 - Runs Kerio Connect on Debian 13 inside Docker.
-- Keeps binaries in the image while persisting configuration, message store, and logs in Docker volumes.
+- Keeps binaries in the image while persisting configuration, license files, message store, and logs in Docker volumes.
 - Exposes the first-run administration interface on `https://localhost:4040/admin`.
 - Prepares logs for export to an external Syslog target such as the Logstash stack in the neighboring project.
 
@@ -97,6 +97,21 @@ docker compose up -d
 
 6. Open `https://localhost:4040/admin`.
 
+## Debian Locale Note
+
+Kerio Connect on Debian expects UTF-8 locales to exist for the UI languages used in administration. For this lab image, `en_US.UTF-8` and `ru_RU.UTF-8` are generated during the Docker build to avoid locale warnings in Kerio logs.
+
+If you reproduce the setup on a plain Debian host outside this container, install and generate them explicitly:
+
+```bash
+apt-get update
+apt-get install -y locales
+sed -i 's/^# *en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+sed -i 's/^# *ru_RU.UTF-8 UTF-8/ru_RU.UTF-8 UTF-8/' /etc/locale.gen
+locale-gen en_US.UTF-8 ru_RU.UTF-8
+update-locale LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
+```
+
 ## Official First-Run Scenario
 
 Follow the vendor wizard after the container is up:
@@ -107,13 +122,21 @@ Follow the vendor wizard after the container is up:
 4. Set the internet hostname and primary email domain.
 5. Create the administrator account.
 6. Choose the message store directory.
-7. Register the product or continue unregistered.
+7. If the built-in `Get a Trial License number` flow fails, request the 30-day trial manually at `https://gfi.ai/products-and-solutions/email-and-messaging-solutions/kerioconnect/free-trial`.
+8. Complete product registration with the received trial key or license file.
+9. After the first successful sign-in and baseline verification, create a backup or snapshot of the VM in Proxmox VE so you can roll back to a clean post-install state.
+
+Practical note:
+
+- In the current lab build, the embedded legacy trial link may still point to `www.kerio.com/scripts/ctrl/ctrl.php` and return `404`, so the manual `Free Trial` URL above is the safer first-run path.
+- For this lab, treat the first PVE backup as part of the initial setup rather than an optional housekeeping step.
 
 Official references:
 
 - https://support.gfi.com/article/110739-initial-configuration-of-kerio-connect-after-installation
 - https://manuals.gfi.com/en/kerio/connect/content/installation-and-upgrade/performing-initial-configuration-in-kerio-connect-1567.html
 - https://manuals.gfi.com/en/kerio/connect/content/server-configuration/accessing-kerio-connect-administration-1161.html
+- https://support.kerioconnect.gfi.com/article/115515-obtaining-a-kerio-connect-license-key
 
 ## Official Syslog Scenario
 

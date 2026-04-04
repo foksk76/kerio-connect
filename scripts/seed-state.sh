@@ -6,7 +6,7 @@ STATE_ROOT="${KERIO_STATE_ROOT:-/var/lib/kerio/state}"
 STORE_ROOT="${KERIO_STORE_ROOT:-/var/lib/kerio/store}"
 LOG_ROOT="${KERIO_LOG_ROOT:-/opt/kerio/logs}"
 
-mkdir -p "${STATE_ROOT}" "${STORE_ROOT}" "${LOG_ROOT}" "${STATE_ROOT}/license"
+mkdir -p "${STATE_ROOT}" "${STORE_ROOT}" "${LOG_ROOT}"
 
 seed_file() {
   src="$1"
@@ -36,7 +36,6 @@ replace_with_symlink() {
 
 seed_file "${KERIO_HOME}/mailserver.cfg" "${STATE_ROOT}/mailserver.cfg"
 seed_file "${KERIO_HOME}/users.cfg" "${STATE_ROOT}/users.cfg"
-seed_dir "${KERIO_HOME}/license" "${STATE_ROOT}/license"
 
 if [ -d "${KERIO_HOME}/store" ] && [ ! -e "${STORE_ROOT}/.seeded-from-image" ]; then
   cp -a "${KERIO_HOME}/store/." "${STORE_ROOT}/" 2>/dev/null || true
@@ -45,7 +44,6 @@ fi
 
 replace_with_symlink "${STATE_ROOT}/mailserver.cfg" "${KERIO_HOME}/mailserver.cfg"
 replace_with_symlink "${STATE_ROOT}/users.cfg" "${KERIO_HOME}/users.cfg"
-replace_with_symlink "${STATE_ROOT}/license" "${KERIO_HOME}/license"
 replace_with_symlink "${STORE_ROOT}" "${KERIO_HOME}/store"
 
 if [ -d "${STORE_ROOT}/logs" ] && [ ! -L "${STORE_ROOT}/logs" ]; then

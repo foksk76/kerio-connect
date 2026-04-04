@@ -7,6 +7,20 @@ cd "${repo_root}"
 timestamp="$(date -u +"%Y-%m-%d %H:%M:%S UTC")"
 repo_path="${repo_root}"
 branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")"
+state_file="${repo_root}/.lab-state.env"
+
+if [ -f "${state_file}" ]; then
+  # shellcheck disable=SC1090
+  . "${state_file}"
+fi
+
+kerio_first_run_status="${KERIO_FIRST_RUN_STATUS:-}"
+kerio_primary_domain="${KERIO_PRIMARY_DOMAIN:-}"
+kerio_hostname="${KERIO_HOSTNAME:-}"
+kerio_message_store="${KERIO_MESSAGE_STORE:-}"
+kerio_admin_account="${KERIO_ADMIN_ACCOUNT:-}"
+kerio_license_note="${KERIO_LICENSE_NOTE:-}"
+kerio_dns_note="${KERIO_DNS_NOTE:-}"
 
 if git rev-parse --verify HEAD >/dev/null 2>&1; then
   head_short="$(git rev-parse --short HEAD)"
@@ -144,7 +158,35 @@ render_change_areas() {
   done
 }
 
-if printf '%s\n' "${compose_json}" | grep -q '"Health":"healthy"'; then
+render_runtime_lines() {
+  if [ -n "${kerio_first_run_status}" ]; then
+    printf -- '- First run: `%s`\n' "${kerio_first_run_status}"
+  fi
+  if [ -n "${kerio_admin_account}" ]; then
+    printf -- '- Admin account: `%s`\n' "${kerio_admin_account}"
+  fi
+  if [ -n "${kerio_primary_domain}" ]; then
+    printf -- '- Primary domain: `%s`\n' "${kerio_primary_domain}"
+  fi
+  if [ -n "${kerio_hostname}" ]; then
+    printf -- '- Hostname: `%s`\n' "${kerio_hostname}"
+  fi
+  if [ -n "${kerio_message_store}" ]; then
+    printf -- '- Message store: `%s`\n' "${kerio_message_store}"
+  fi
+  if [ -n "${kerio_license_note}" ]; then
+    printf -- '- License note: `%s`\n' "${kerio_license_note}"
+  fi
+  if [ -n "${kerio_dns_note}" ]; then
+    printf -- '- DNS note: `%s`\n' "${kerio_dns_note}"
+  fi
+}
+
+if [ "${kerio_first_run_status}" = "completed" ] && [ -n "${kerio_admin_account}" ]; then
+  first_step="Sign in to \`https://localhost:4040/admin\` as \`${kerio_admin_account}\` and continue post-setup tasks."
+elif [ "${kerio_first_run_status}" = "completed" ]; then
+  first_step="Sign in to \`https://localhost:4040/admin\` and continue post-setup tasks."
+elif printf '%s\n' "${compose_json}" | grep -q '"Health":"healthy"'; then
   first_step="Open \`https://localhost:4040/admin\` and finish the first-run wizard."
 elif printf '%s\n' "${compose_json}" | grep -q '"State":"running"'; then
   first_step="Wait for the container to become healthy, then open \`https://localhost:4040/admin\`."
@@ -156,6 +198,12 @@ if [ "${postfix_state}" = "active" ] || [ "${port25_status}" != "free" ]; then
   second_step="Keep host port \`25\` free for Kerio by stopping or disabling the local MTA, or remap \`KERIO_SMTP_PORT\` in \`.env\`."
 else
   second_step="Decide whether to disable \`postfix\` permanently if this host should keep port \`25\` free after reboot."
+fi
+
+if [ -n "${kerio_license_note}" ]; then
+  third_step="${kerio_license_note}"
+else
+  third_step="If you need a trial or temporary license, use the manual GFI Free Trial flow documented in \`README.md\`."
 fi
 
 cat > "${repo_root}/HANDOFF.md" <<EOF
@@ -175,6 +223,10 @@ This file captures the current working state of the Kerio Connect lab repository
 - Kerio image: \`${image_line}\`
 - Postfix service: \`${postfix_state}\`
 - Host port 25: \`${port25_status}\`
+
+## Recorded Lab State
+
+$(render_runtime_lines)
 
 ## Compose Status
 
@@ -200,7 +252,7 @@ ${diffstat:-No staged diffstat available.}
 
 1. The build now auto-resolves the official Kerio Linux DEB from the public Kerio archive, with local \`artifacts/\` and explicit \`KERIO_DOWNLOAD_URL\` overrides still supported.
 2. The current container was able to reach \`cdn.kerio.com\` and \`appmanager.gfi.com\`, and the image build completed successfully on this host.
-3. The current runtime path still needs normal first-run verification inside Kerio Connect Administration after the initial wizard is completed.
+3. Runtime milestones recorded in \`.lab-state.env\` are folded into this handoff so first-run progress is not lost between chats or commits.
 4. Commit-time automation for \`HANDOFF.md\`, \`NEXT_STEPS.md\`, and \`CHANGELOG.md\` lives in \`scripts/update-commit-docs.sh\` and is triggered by \`.githooks/pre-commit\`.
 
 ## Suggested Resume Commands
@@ -231,6 +283,7 @@ Generated automatically on ${timestamp}.
 - Kerio image: \`${image_line}\`
 - Postfix service: \`${postfix_state}\`
 - Host port 25: \`${port25_status}\`
+$(render_runtime_lines)
 
 ## Compose Status
 
@@ -240,14 +293,15 @@ $(printf '%s\n' "${compose_lines}")
 
 1. ${first_step}
 2. ${second_step}
-3. Verify the package layout inside the container or image:
+3. ${third_step}
+4. Verify the package layout inside the container or image:
    - \`/etc/init.d/kerio-connect\`
    - \`/opt/kerio/mailserver/mailserver.cfg\`
    - \`/opt/kerio/mailserver/users.cfg\`
    - \`/opt/kerio/mailserver/license\`
    - \`/opt/kerio/mailserver/store\`
-4. Confirm that \`scripts/configure-log-root.sh\` still matches the real \`mailserver.cfg\` shape and that logs can be redirected to \`/opt/kerio/logs\`.
-5. Enable external Syslog logging in Kerio Connect Administration and point it at the Logstash receiver once the wizard is complete.
+5. Confirm that \`scripts/configure-log-root.sh\` still matches the real \`mailserver.cfg\` shape and that logs can be redirected to \`/opt/kerio/logs\`.
+6. Enable external Syslog logging in Kerio Connect Administration and point it at the Logstash receiver once the wizard is complete.
 
 ## Commit Automation
 
