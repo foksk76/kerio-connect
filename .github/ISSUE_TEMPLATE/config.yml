@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Support and troubleshooting
+    url: https://github.com/foksk76/kerio-connect/blob/main/SUPPORT.md
+    about: Start here for usage questions, setup help, and troubleshooting guidance.
+  - name: Security reporting guidance
+    url: https://github.com/foksk76/kerio-connect/blob/main/SECURITY.md
+    about: Read this before reporting anything that could expose secrets, mailbox data, or infrastructure details.

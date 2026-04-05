@@ -7,6 +7,35 @@ It records releases, major repository changes, fixed bugs, operational milestone
 
 No unreleased changes are recorded yet.
 
+## v0.2.0-alpha.2 - 2026-04-05
+
+Follow-up alpha focused on making the GitHub repository clearer for contributors and more reliable for GitHub-hosted CI.
+
+### Added
+
+- Community health files for support, security reporting, contribution guidance, code of conduct, and issue / PR templates.
+- `.github/release.yml` to organize future GitHub release notes into clearer categories.
+
+### Changed
+
+- `README.md` now has a clearer top-level status, target audience, maintainer entry point, and support links for repository visitors.
+- The GitHub Actions smoke check was adjusted to validate the admin endpoint from inside the container and confirm port publishing, avoiding flaky runner-host HTTPS probing.
+
+### Fixed
+
+- `Docker Lab CI` now completes successfully on GitHub-hosted runners instead of failing in the final smoke-check step.
+- Repository onboarding is clearer for new users because support, contribution, and security paths are now explicit instead of implicit.
+
+### Operational Milestones
+
+- Community health scaffolding is now present in-repo instead of being tracked only as a backlog item.
+- GitHub Actions `Docker Lab CI` was verified green after the runner-specific smoke-check fix.
+
+### Related Commits
+
+- `c92b9a3` Fix GitHub Actions admin smoke check
+- `1b568e3` Fix CI smoke check on GitHub runners
+
 ## v0.2.0-alpha.1 - 2026-04-05
 
 Minor alpha focused on bringing GitHub Actions CI in line with the real Docker lab workflow.

@@ -6,10 +6,10 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-04-05 01:18:33 UTC
+- Updated: 2026-04-05 01:52:52 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `c92b9a3` - Fix GitHub Actions admin smoke check
+- Base HEAD: `1b568e3` - Fix CI smoke check on GitHub runners
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 1GB`
 - Postfix service: `inactive`
@@ -28,23 +28,43 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Compose Status
 
-- `kerio-connect`: Up 27 minutes (healthy), health `healthy`
+- `kerio-connect`: Up About an hour (healthy), health `healthy`
 
 ## Pending Change Areas
 
-- Repository files updated.
+- Project documentation refreshed.
 
 ## Pending Source Files
 
-- `.github/workflows/docker-image.yml`
+- `.github/ISSUE_TEMPLATE/bug_report.yml`
+- `.github/ISSUE_TEMPLATE/config.yml`
+- `.github/ISSUE_TEMPLATE/feature_request.yml`
+- `.github/pull_request_template.md`
+- `.github/release.yml`
+- `CHANGELOG.md`
+- `CODE_OF_CONDUCT.md`
+- `CONTRIBUTING.md`
+- `README.md`
+- `SECURITY.md`
+- `SUPPORT.md`
 
 ## Pending Diffstat
 
- 1 file changed, 2 insertions(+), 17 deletions(-)
+ 11 files changed, 389 insertions(+)
 
 ```
- .github/workflows/docker-image.yml | 19 ++-----------------
- 1 file changed, 2 insertions(+), 17 deletions(-)
+ .github/ISSUE_TEMPLATE/bug_report.yml      | 59 +++++++++++++++++++++++++
+ .github/ISSUE_TEMPLATE/config.yml          |  8 ++++
+ .github/ISSUE_TEMPLATE/feature_request.yml | 34 ++++++++++++++
+ .github/pull_request_template.md           | 19 ++++++++
+ .github/release.yml                        | 23 ++++++++++
+ CHANGELOG.md                               | 29 ++++++++++++
+ CODE_OF_CONDUCT.md                         | 31 +++++++++++++
+ CONTRIBUTING.md                            | 71 ++++++++++++++++++++++++++++++
+ README.md                                  | 35 +++++++++++++++
+ SECURITY.md                                | 37 ++++++++++++++++
+ SUPPORT.md                                 | 43 ++++++++++++++++++
+ 11 files changed, 389 insertions(+)
 ```
 
 ## Resume Notes

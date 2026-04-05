@@ -1,0 +1,23 @@
+changelog:
+  categories:
+    - title: Runtime and persistence
+      labels:
+        - runtime
+        - persistence
+        - first-run
+    - title: CI and automation
+      labels:
+        - ci
+        - automation
+        - github-actions
+    - title: Documentation and operator guidance
+      labels:
+        - documentation
+        - docs
+    - title: Bug fixes
+      labels:
+        - bug
+        - fix
+    - title: Other changes
+      labels:
+        - "*"

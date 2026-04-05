@@ -1,0 +1,59 @@
+name: Bug report
+description: Report a reproducible problem in the lab wrapper, CI, or operator workflow.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please keep secrets, license keys, and private mail data out of the report.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+      placeholder: A clear and concise description of the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include host OS, Docker version, Compose version, and whether first run was already completed.
+      placeholder: Debian 13, Docker ..., docker compose ..., first run completed / not completed
+    validations:
+      required: true
+  - type: dropdown
+    id: installer_source
+    attributes:
+      label: Installer source
+      options:
+        - Automatic download from official Kerio archive
+        - Local artifacts directory
+        - Explicit KERIO_DOWNLOAD_URL
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: How can someone else reproduce the problem?
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Paste the relevant output from docker compose and the container logs. Remove secrets first.
+      render: shell
+    validations:
+      required: false

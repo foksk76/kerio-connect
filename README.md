@@ -1,6 +1,29 @@
 # Kerio Connect Lab
 
+[![Docker Lab CI](https://github.com/foksk76/kerio-connect/actions/workflows/docker-image.yml/badge.svg)](https://github.com/foksk76/kerio-connect/actions/workflows/docker-image.yml)
+
 This repository wraps the official Kerio Connect Debian installer in a local Docker lab for evaluation and integration work. The vendor documents Linux `.deb` and `.rpm` installs plus virtual appliances, but does not publish an official Docker deployment model, so treat this repository as a local lab wrapper rather than a production reference.
+
+## Project Status
+
+- Status: active HomeLab and integration wrapper
+- Maturity: first stable release plus follow-up alpha work on CI and operator workflow
+- Current target: Debian 13 with Docker Compose
+- Intended use: evaluation, debugging, integration, and repeatable first-run experiments
+- Not intended for: production deployment or redistribution of vendor binaries
+
+## Who This Repository Is For
+
+- Operators who need a reproducible Kerio Connect lab on Debian without snapshotting the whole install tree into an image.
+- HomeLab users validating first-run behavior, licensing flow, persistence, and log export.
+- Integrators who want a disposable but stateful wrapper around the official Kerio Connect Linux package.
+
+## Support And Contributions
+
+- Usage questions and operational help: see [SUPPORT.md](SUPPORT.md)
+- Bug reports and contribution flow: see [CONTRIBUTING.md](CONTRIBUTING.md)
+- Security-sensitive reports: see [SECURITY.md](SECURITY.md)
+- Maintainer: `@foksk76`
 
 ## What This Repository Does
 
@@ -59,6 +82,10 @@ Use the official vendor hosts below for generic download entry points and instal
 
 - [`Dockerfile`](Dockerfile): Debian 13 image plus Kerio install wrapper with official-archive auto-download and local artifact fallback.
 - [`docker-compose.yml`](docker-compose.yml): local lab runtime with volumes, ports, and healthcheck.
+- [`CONTRIBUTING.md`](CONTRIBUTING.md): contributor workflow and scope for repository changes.
+- [`SUPPORT.md`](SUPPORT.md): where to ask for help and what details to include.
+- [`SECURITY.md`](SECURITY.md): security reporting expectations and supported versions.
+- [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md): community expectations for repository discussions and collaboration.
 - [`.githooks/pre-commit`](.githooks/pre-commit): auto-refreshes `HANDOFF.md` and `NEXT_STEPS.md` before each commit.
 - [`scripts/entrypoint.sh`](scripts/entrypoint.sh): container start logic.
 - [`scripts/seed-state.sh`](scripts/seed-state.sh): persists config and store paths without covering the whole install tree.
@@ -191,6 +218,14 @@ Then verify:
 - `https://localhost:4040/admin` responds
 - the first-run wizard or admin login page opens
 - the configured log types appear on the remote Syslog receiver
+
+## Help And Support
+
+If you are trying to figure out whether a problem belongs to this repository or to Kerio Connect itself:
+
+- Use [SUPPORT.md](SUPPORT.md) for setup questions, bug reports, and operational troubleshooting.
+- Use [SECURITY.md](SECURITY.md) for anything that may expose credentials, mail data, or internet-facing mail services.
+- Use [CONTRIBUTING.md](CONTRIBUTING.md) before sending patches, especially for changes that affect persistence, licensing, CI, or first-run behavior.
 
 ## Limitations
 
