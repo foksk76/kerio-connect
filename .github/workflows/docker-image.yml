@@ -1,18 +1,105 @@
-name: Docker Image CI
+name: Docker Lab CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+    paths:
+      - ".github/workflows/docker-image.yml"
+      - "Dockerfile"
+      - "docker-compose.yml"
+      - ".env.example"
+      - "scripts/**"
+      - "artifacts/**"
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+    paths:
+      - ".github/workflows/docker-image.yml"
+      - "Dockerfile"
+      - "docker-compose.yml"
+      - ".env.example"
+      - "scripts/**"
+      - "artifacts/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-
-  build:
-
+  compose-build-and-smoke:
+    name: Compose build and smoke test
     runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      DOCKER_BUILDKIT: "1"
+      COMPOSE_DOCKER_CLI_BUILD: "1"
+      CONTAINER_NAME: kerio-connect-ci
+      KERIO_HOSTNAME: kerio-connect-ci
+      KERIO_ADMIN_PORT: "44040"
+      KERIO_HTTPS_PORT: "44443"
+      KERIO_SMTP_PORT: "40025"
+      KERIO_SMTPS_PORT: "40465"
+      KERIO_SUBMISSION_PORT: "40587"
+      KERIO_IMAPS_PORT: "40993"
+      KERIO_POP3S_PORT: "40995"
+      KERIO_STATE_VOLUME: kerio_state_ci
+      KERIO_STORE_VOLUME: kerio_store_ci
+      KERIO_LICENSE_VOLUME: kerio_license_ci
+      KERIO_LOGS_VOLUME: kerio_logs_ci
+      KERIO_AUTO_DOWNLOAD: ${{ vars.KERIO_AUTO_DOWNLOAD }}
+      KERIO_VERSION_LABEL: ${{ vars.KERIO_VERSION_LABEL }}
+      KERIO_DOWNLOAD_URL: ${{ vars.KERIO_DOWNLOAD_URL }}
+      KERIO_DOWNLOAD_SHA256: ${{ vars.KERIO_DOWNLOAD_SHA256 }}
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Show Docker versions
+        run: |
+          docker version
+          docker compose version
+
+      - name: Normalize optional build inputs
+        run: |
+          echo "KERIO_AUTO_DOWNLOAD=${KERIO_AUTO_DOWNLOAD:-1}" >> "${GITHUB_ENV}"
+          echo "KERIO_VERSION_LABEL=${KERIO_VERSION_LABEL}" >> "${GITHUB_ENV}"
+          echo "KERIO_DOWNLOAD_URL=${KERIO_DOWNLOAD_URL}" >> "${GITHUB_ENV}"
+          echo "KERIO_DOWNLOAD_SHA256=${KERIO_DOWNLOAD_SHA256}" >> "${GITHUB_ENV}"
+
+      - name: Validate compose configuration
+        run: docker compose config
+
+      - name: Build Kerio lab image
+        run: docker compose build kerio-connect
+
+      - name: Start Kerio lab
+        run: docker compose up -d kerio-connect
+
+      - name: Wait for healthy container
+        run: |
+          for attempt in $(seq 1 30); do
+            status="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "${CONTAINER_NAME}" 2>/dev/null || true)"
+            if [ "${status}" = "healthy" ]; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Container did not become healthy in time." >&2
+          docker compose ps
+          docker compose logs --tail=200 kerio-connect || true
+          exit 1
+
+      - name: Smoke check admin endpoint
+        run: wget --no-check-certificate --spider -q "https://127.0.0.1:${KERIO_ADMIN_PORT}/admin/"
+
+      - name: Show compose state on failure
+        if: failure()
+        run: |
+          docker compose ps
+          docker compose logs --tail=200 kerio-connect || true
+
+      - name: Tear down lab stack
+        if: always()
+        run: docker compose down -v --remove-orphans

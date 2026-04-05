@@ -7,6 +7,30 @@ It records releases, major repository changes, fixed bugs, operational milestone
 
 No unreleased changes are recorded yet.
 
+## v0.2.0-alpha.1 - 2026-04-05
+
+Minor alpha focused on bringing GitHub Actions CI in line with the real Docker lab workflow.
+
+### Changed
+
+- `.github/workflows/docker-image.yml` now validates the actual Compose configuration instead of running an isolated `docker build`.
+- The CI job now uses the same build inputs as the lab, including optional Kerio download overrides through repository variables.
+- The workflow now boots the Kerio lab on isolated CI-only ports, waits for the container healthcheck, smoke-tests the admin endpoint, and tears the stack down cleanly.
+
+### Fixed
+
+- The GitHub Actions workflow no longer drifts from the documented local workflow in `README.md`.
+- CI validation now exercises the same `docker compose build` and `docker compose up` path used by operators in the lab.
+
+### Operational Milestones
+
+- First GitHub Actions workflow for the lab was added and then corrected to match the real runtime model.
+- Local verification confirmed the CI-style flow succeeds end to end: `compose config`, image build, container startup, healthcheck, admin endpoint probe, and teardown.
+
+### Related Commits
+
+- `00bdacf` Create docker-image.yml
+
 ## v0.1.0 - 2026-04-04
 
 First stable release of the Debian 13 / Docker-based Kerio Connect lab.

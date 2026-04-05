@@ -6,14 +6,14 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-04-04 09:32:58 UTC
+- Updated: 2026-04-05 01:08:36 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `cfc2abd` - Curate changelog history and stop auto-overwriting it
+- Base HEAD: `00bdacf` - Create docker-image.yml
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 1GB`
 - Postfix service: `inactive`
-- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=49412,fd=4))`
+- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=449,fd=4))`
 
 ## Recorded Lab State
 
@@ -28,29 +28,25 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Compose Status
 
-- `kerio-connect`: Up About an hour (healthy), health `healthy`
+- `kerio-connect`: Up 17 minutes (healthy), health `healthy`
 
 ## Pending Change Areas
 
-- Commit-time doc automation updated.
-- Build and runtime configuration changed.
 - Project documentation refreshed.
 
 ## Pending Source Files
 
-- `.lab-state.env`
+- `.github/workflows/docker-image.yml`
 - `CHANGELOG.md`
-- `scripts/update-commit-docs.sh`
 
 ## Pending Diffstat
 
- 3 files changed, 37 insertions(+), 3 deletions(-)
+ 2 files changed, 120 insertions(+), 9 deletions(-)
 
 ```
- .lab-state.env                |  1 +
- CHANGELOG.md                  | 27 +++++++++++++++++++++++++--
- scripts/update-commit-docs.sh | 12 +++++++++++-
- 3 files changed, 37 insertions(+), 3 deletions(-)
+ .github/workflows/docker-image.yml | 105 +++++++++++++++++++++++++++++++++----
+ CHANGELOG.md                       |  24 +++++++++
+ 2 files changed, 120 insertions(+), 9 deletions(-)
 ```
 
 ## Resume Notes
