@@ -34,6 +34,7 @@ jobs:
     env:
       DOCKER_BUILDKIT: "1"
       COMPOSE_DOCKER_CLI_BUILD: "1"
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
       CONTAINER_NAME: kerio-connect-ci
       KERIO_HOSTNAME: kerio-connect-ci
       KERIO_ADMIN_PORT: "44040"
@@ -92,7 +93,24 @@ jobs:
           exit 1
 
       - name: Smoke check admin endpoint
-        run: wget --no-check-certificate --spider -q "https://127.0.0.1:${KERIO_ADMIN_PORT}/admin/"
+        run: |
+          python3 - <<'PY'
+          import os
+          import ssl
+          import urllib.request
+
+          port = os.environ["KERIO_ADMIN_PORT"]
+          url = f"https://127.0.0.1:{port}/admin/"
+          request = urllib.request.Request(url, method="GET")
+
+          with urllib.request.urlopen(
+              request,
+              context=ssl._create_unverified_context(),
+              timeout=30,
+          ) as response:
+              if response.status >= 400:
+                  raise SystemExit(f"Unexpected HTTP status from {url}: {response.status}")
+          PY
 
       - name: Show compose state on failure
         if: failure()
