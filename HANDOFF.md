@@ -6,10 +6,10 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-04-05 01:52:52 UTC
+- Updated: 2026-04-05 08:28:08 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `1b568e3` - Fix CI smoke check on GitHub runners
+- Base HEAD: `30cc22d` - Release v0.2.0-alpha.2
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 1GB`
 - Postfix service: `inactive`
@@ -28,7 +28,7 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Compose Status
 
-- `kerio-connect`: Up About an hour (healthy), health `healthy`
+- `kerio-connect`: Up 8 hours (healthy), health `healthy`
 
 ## Pending Change Areas
 
@@ -36,35 +36,27 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Pending Source Files
 
-- `.github/ISSUE_TEMPLATE/bug_report.yml`
-- `.github/ISSUE_TEMPLATE/config.yml`
-- `.github/ISSUE_TEMPLATE/feature_request.yml`
-- `.github/pull_request_template.md`
-- `.github/release.yml`
 - `CHANGELOG.md`
-- `CODE_OF_CONDUCT.md`
 - `CONTRIBUTING.md`
+- `LICENSE`
 - `README.md`
 - `SECURITY.md`
 - `SUPPORT.md`
+- `THIRD_PARTY_NOTICE.md`
 
 ## Pending Diffstat
 
- 11 files changed, 389 insertions(+)
+ 7 files changed, 692 insertions(+), 279 deletions(-)
 
 ```
- .github/ISSUE_TEMPLATE/bug_report.yml      | 59 +++++++++++++++++++++++++
- .github/ISSUE_TEMPLATE/config.yml          |  8 ++++
- .github/ISSUE_TEMPLATE/feature_request.yml | 34 ++++++++++++++
- .github/pull_request_template.md           | 19 ++++++++
- .github/release.yml                        | 23 ++++++++++
- CHANGELOG.md                               | 29 ++++++++++++
- CODE_OF_CONDUCT.md                         | 31 +++++++++++++
- CONTRIBUTING.md                            | 71 ++++++++++++++++++++++++++++++
- README.md                                  | 35 +++++++++++++++
- SECURITY.md                                | 37 ++++++++++++++++
- SUPPORT.md                                 | 43 ++++++++++++++++++
- 11 files changed, 389 insertions(+)
+ CHANGELOG.md          |  32 +++
+ CONTRIBUTING.md       | 136 +++++++------
+ LICENSE               | 156 +++++++++++++++
+ README.md             | 528 +++++++++++++++++++++++++++++++++++---------------
+ SECURITY.md           |  51 ++---
+ SUPPORT.md            |  61 +++---
+ THIRD_PARTY_NOTICE.md |   7 +
+ 7 files changed, 692 insertions(+), 279 deletions(-)
 ```
 
 ## Resume Notes

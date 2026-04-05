@@ -1,236 +1,458 @@
 # Kerio Connect Lab
 
+Reproducible Docker-based lab environment for Kerio Connect on Debian 13.
+
 [![Docker Lab CI](https://github.com/foksk76/kerio-connect/actions/workflows/docker-image.yml/badge.svg)](https://github.com/foksk76/kerio-connect/actions/workflows/docker-image.yml)
 
-This repository wraps the official Kerio Connect Debian installer in a local Docker lab for evaluation and integration work. The vendor documents Linux `.deb` and `.rpm` installs plus virtual appliances, but does not publish an official Docker deployment model, so treat this repository as a local lab wrapper rather than a production reference.
+> **Project status:** Educational / lab / reproducible project. Use it for evaluation, debugging, integration tests, and repeatable first-run experiments, not for production deployment.
 
-## Project Status
+## Why this repository exists
 
-- Status: active HomeLab and integration wrapper
-- Maturity: first stable release plus follow-up alpha work on CI and operator workflow
-- Current target: Debian 13 with Docker Compose
-- Intended use: evaluation, debugging, integration, and repeatable first-run experiments
-- Not intended for: production deployment or redistribution of vendor binaries
+Kerio Connect is normally installed as a traditional Linux package or virtual appliance. That is fine for manual administration, but it is awkward when you need a repeatable test environment for:
 
-## Who This Repository Is For
+- first-run validation;
+- licensing and restart behavior;
+- persistent state and message store checks;
+- log export to external Syslog or the related ELK pipeline;
+- reproducible bug reports and CI-style smoke checks.
 
-- Operators who need a reproducible Kerio Connect lab on Debian without snapshotting the whole install tree into an image.
-- HomeLab users validating first-run behavior, licensing flow, persistence, and log export.
-- Integrators who want a disposable but stateful wrapper around the official Kerio Connect Linux package.
+This repository solves that by wrapping the official Kerio Connect Debian package in a local Docker lab that keeps the vendor binaries in the image while persisting runtime data in Docker volumes.
 
-## Support And Contributions
+## Project family
 
-- Usage questions and operational help: see [SUPPORT.md](SUPPORT.md)
-- Bug reports and contribution flow: see [CONTRIBUTING.md](CONTRIBUTING.md)
-- Security-sensitive reports: see [SECURITY.md](SECURITY.md)
-- Maintainer: `@foksk76`
+This repository is part of the **Kerio Connect Monitoring & Logging** project family:
 
-## What This Repository Does
+1. [kerio-connect](https://github.com/foksk76/kerio-connect) — reproducible Kerio Connect lab environment
+2. [kerio-logstash-project](https://github.com/foksk76/kerio-logstash-project) — parsing, normalization, and enrichment pipeline for Kerio syslog
+3. [kerio-syslog-anonymizer](https://github.com/foksk76/kerio-syslog-anonymizer) — deterministic anonymization of real log data for safe public use
 
-- Builds an image from the official Kerio Connect Debian installer.
-- Runs Kerio Connect on Debian 13 inside Docker.
-- Keeps binaries in the image while persisting configuration, license files, message store, and logs in Docker volumes.
-- Exposes the first-run administration interface on `https://localhost:4040/admin`.
-- Prepares logs for export to an external Syslog target such as the Logstash stack in the neighboring project.
+## Where this repository fits
 
-## VM Requirements
+This repository is the source-system lab in the family flow.
 
-Vendor minimums for `1-20` users are:
+```text
+Kerio Connect lab -> Syslog output -> kerio-logstash-project -> Elasticsearch / Kibana
+                                   -> sample or sanitized logs -> kerio-syslog-anonymizer
+```
 
-- `2 Core CPU 1 GHz 64-bit`
-- `4 GB RAM`
-- `40 GB` free space for the message store and backup
+Its job is to provide a reproducible Kerio Connect environment. It does not parse logs, normalize events, or anonymize data itself.
 
-GFI also lists `Debian 13 (Trixie)` as a supported Linux platform and notes that virtual deployments should use the same requirements as standard installs plus host OS overhead.
+## Main use cases
 
-Official references:
+- Stand up a repeatable Kerio Connect lab on Debian 13 with Docker Compose.
+- Validate first-run behavior, restart persistence, and license handling.
+- Test exposed admin and mail ports before integrating with downstream monitoring components.
+- Export Kerio logs to an external Syslog receiver such as Logstash.
+- Rebuild or reset a known-good lab environment without reinstalling the product manually.
 
-- https://support.kerioconnect.gfi.com/article/112061-kerio-connect-server-system-installation-requirements
-- https://support.gfi.com/article/110673-kerio-connect-server-system-requirements
+## Audience
 
-Practical lab recommendation:
+- beginner DevOps engineers
+- sysadmins and homelab operators
+- observability and SecOps practitioners preparing Kerio logging pipelines
+- maintainers of the surrounding Kerio Connect Monitoring & Logging project family
 
-- `4 vCPU`
-- `8 GB RAM`
-- `60 GB` disk
+## Architecture / Flow
 
-The vendor minimum is enough to start small lab instances, but the higher recommendation is less painful once indexing, logging, and browser-based setup are all active.
+1. `docker compose build` resolves the official Kerio Connect Debian installer from one of three sources:
+   - local `artifacts/`
+   - explicit `KERIO_DOWNLOAD_URL`
+   - public Kerio archive auto-download
+2. The image installs Kerio Connect plus wrapper scripts for startup, health checks, state seeding, and log-root handling.
+3. `docker compose up -d` starts the lab with persistent Docker volumes for:
+   - configuration state
+   - message store
+   - license directory
+   - log directory
+4. The operator completes the vendor first-run wizard through the admin endpoint on port `4040`.
+   - during the initial setup phase, access may start at `http://localhost:4040/admin/`
+   - after the initial setup is completed, Kerio Connect redirects admin access to `https://localhost:4040/admin/`
+5. The running lab exposes admin and mail ports and can forward logs to an external Syslog target.
+6. Validation happens through:
+   - container health status
+   - exposed ports
+   - the admin web endpoint
+   - Kerio service status inside the container
 
-## What You Need Before Build
+## Requirements
 
-1. Create a local `.env` from [`.env.example`](.env.example) if you want to override ports, limits, or volume names.
-2. Choose how the build should get the official Kerio Connect Debian installer:
-   - leave `KERIO_AUTO_DOWNLOAD=1` to resolve the latest public Linux DEB from the official Kerio archive automatically
-   - or place a `.deb` file in [`artifacts/`](artifacts/) for an offline or pinned build
-   - or set `KERIO_DOWNLOAD_URL` to an explicit official Linux DEB URL
-3. If you need reproducibility, set `KERIO_VERSION_LABEL` and optionally `KERIO_DOWNLOAD_SHA256`.
+### Software
 
-Official installer guidance:
+- Host OS: Linux host capable of running Docker; Debian 13 is the current target and tested path in this repository
+- Docker Engine: required
+- Docker Compose plugin: required
+- Network access to official Kerio download hosts if you use auto-download
+- Optional: a locally supplied official Kerio Connect `.deb` in `artifacts/` for offline or pinned builds
 
-- https://support.kerioconnect.gfi.com/article/112195-installing-kerio-connect-server-on-linux-debian-ubuntu
-- https://cdn.kerio.com/archive/index.php?type=source
+### Hardware
 
-## Official Download Hosts
+Vendor minimums for `1-20` users:
 
-Use the official vendor hosts below for generic download entry points and installer retrieval. These are intentionally host-level links, without version-pinned paths:
+- CPU: `2 core`, `1 GHz`, `64-bit`
+- RAM: `4 GB`
+- Disk: `40 GB` free space for message store and backup
 
-- https://cdn.kerio.com/
-- https://appmanager.gfi.com/
-- https://support.kerioconnect.gfi.com/
+Practical lab recommendation for less painful testing:
 
-## Repository Layout
+- CPU: `4 vCPU`
+- RAM: `8 GB`
+- Disk: `60 GB`
 
-- [`Dockerfile`](Dockerfile): Debian 13 image plus Kerio install wrapper with official-archive auto-download and local artifact fallback.
-- [`docker-compose.yml`](docker-compose.yml): local lab runtime with volumes, ports, and healthcheck.
-- [`CONTRIBUTING.md`](CONTRIBUTING.md): contributor workflow and scope for repository changes.
-- [`SUPPORT.md`](SUPPORT.md): where to ask for help and what details to include.
-- [`SECURITY.md`](SECURITY.md): security reporting expectations and supported versions.
-- [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md): community expectations for repository discussions and collaboration.
-- [`.githooks/pre-commit`](.githooks/pre-commit): auto-refreshes `HANDOFF.md` and `NEXT_STEPS.md` before each commit.
-- [`scripts/entrypoint.sh`](scripts/entrypoint.sh): container start logic.
-- [`scripts/seed-state.sh`](scripts/seed-state.sh): persists config and store paths without covering the whole install tree.
-- [`scripts/configure-log-root.sh`](scripts/configure-log-root.sh): best-effort log-root patch for `mailserver.cfg`.
-- [`scripts/healthcheck.sh`](scripts/healthcheck.sh): probes the admin endpoint or service status.
-- [`scripts/update-commit-docs.sh`](scripts/update-commit-docs.sh): generates commit-time snapshots for `HANDOFF.md` and `NEXT_STEPS.md`.
-- [`scripts/enable-git-hooks.sh`](scripts/enable-git-hooks.sh): configures `core.hooksPath=.githooks` for the local clone.
-- [`CHANGELOG.md`](CHANGELOG.md): curated project journal for releases, fixes, features, and operational milestones.
+### Tested versions
+
+| Component | Version | Notes |
+|---|---|---|
+| Debian | 13 (Trixie) | current repository target |
+| Docker Engine | 26.1.5+dfsg1 | verified locally |
+| Docker Compose | 2.26.1-4 | verified locally |
+| Kerio Connect | 10.0.9 | currently validated in this lab; exact build can change when auto-download is left enabled |
+
+## Repository structure
+
+```text
+.
+├── .env.example
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   ├── pull_request_template.md
+│   ├── release.yml
+│   └── workflows/
+│       └── docker-image.yml
+├── artifacts/
+├── CHANGELOG.md
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── Dockerfile
+├── HANDOFF.md
+├── NEXT_STEPS.md
+├── README.md
+├── SECURITY.md
+├── SUPPORT.md
+├── docker-compose.yml
+└── scripts/
+    ├── configure-log-root.sh
+    ├── enable-git-hooks.sh
+    ├── entrypoint.sh
+    ├── healthcheck.sh
+    ├── seed-state.sh
+    └── update-commit-docs.sh
+```
 
 ## Quick Start
 
-1. Review [`.env.example`](.env.example) and create `.env` if needed.
-2. Decide whether to:
-   - use automatic download from the official Kerio archive
-   - pin a specific archive version through `KERIO_VERSION_LABEL`
-   - override the exact official DEB URL through `KERIO_DOWNLOAD_URL`
-   - or place a local `.deb` in [`artifacts/`](artifacts/)
-3. If the host already runs a local MTA on port `25`, stop it before starting the lab. On this Debian host the conflicting service was `postfix`:
+> The commands below assume the default admin port `4040`. If you change `KERIO_ADMIN_PORT` in `.env`, substitute your chosen port in the verification commands. During the very first setup, `http://localhost:4040/admin/` may answer first; after the wizard is completed, admin access is expected on `https://localhost:4040/admin/`.
+
+### 1. Clone the repository
 
 ```bash
-systemctl stop postfix
-ss -ltnp '( sport = :25 )'
+git clone https://github.com/foksk76/kerio-connect.git
+cd kerio-connect
+git status --short
 ```
 
-4. Build the image:
+Expected result:
+
+- the repository is cloned successfully;
+- `git status --short` prints nothing for a clean checkout.
+
+### 2. Prepare the environment
+
+```bash
+cp .env.example .env
+scripts/enable-git-hooks.sh
+docker compose config >/tmp/kerio-connect.compose.txt
+sed -n '1,40p' /tmp/kerio-connect.compose.txt
+```
+
+Edit `.env` before the first build if any of these apply:
+
+- `KERIO_ADMIN_PORT`: change this if `4040` is already in use
+- `KERIO_SMTP_PORT`: keep `25` only if the host port is free; otherwise use something like `2525`
+- `KERIO_VERSION_LABEL`: set this if you want a pinned Kerio archive version
+- `KERIO_DOWNLOAD_URL`: set this only if you want an explicit official Linux DEB URL
+- `KERIO_DOWNLOAD_SHA256`: set this if you want checksum verification for the downloaded DEB
+
+If you need an offline or pinned local build, place exactly one official Kerio Connect Debian installer in `artifacts/`.
+
+If the host already runs a local MTA on port `25`, stop it before startup or remap `KERIO_SMTP_PORT`:
+
+```bash
+systemctl stop postfix || true
+ss -ltn '( sport = :25 )'
+```
+
+Expected result:
+
+- `docker compose config` renders without errors;
+- the generated config contains the `kerio-connect` service;
+- host port `25` is either free or intentionally remapped in `.env`.
+
+### 3. Run the project
 
 ```bash
 docker compose build
+docker compose up -d
+docker compose ps
 ```
 
-5. Start the lab:
+What to expect:
+
+- the first build may take several minutes if the image downloads the vendor package from the public archive;
+- `docker compose up -d` creates one service named `kerio-connect`;
+- `docker compose ps` may show `health: starting` for a short time before it becomes `healthy`.
+
+### 4. Verify the result
+
+Check container state:
 
 ```bash
+docker compose ps
+```
+
+Expected result:
+
+- the `kerio-connect` service is `Up`;
+- the health state becomes `healthy`.
+
+Check exposed ports:
+
+```bash
+ss -ltn '( sport = :4040 or sport = :443 or sport = :25 or sport = :465 or sport = :587 or sport = :993 or sport = :995 )'
+```
+
+Expected result:
+
+- listeners exist for the ports you mapped in `.env`;
+- with default settings, the lab listens on `4040`, `443`, `25`, `465`, `587`, `993`, and `995`.
+
+Check the Kerio service from inside the container:
+
+```bash
+docker compose exec -T kerio-connect /usr/local/bin/healthcheck.sh && echo HEALTHCHECK_OK
+docker compose exec -T kerio-connect /etc/init.d/kerio-connect status
+```
+
+Expected result:
+
+- the first command prints `HEALTHCHECK_OK`;
+- the second command prints `Kerio Connect is running..`
+
+Check initial web access:
+
+```bash
+wget --server-response --spider http://localhost:4040/admin/ 2>&1 | sed -n '1,20p'
+wget --no-check-certificate --server-response --spider https://localhost:4040/admin/ 2>&1 | sed -n '1,20p'
+```
+
+Expected result:
+
+- before the first-run wizard is completed, the `http://localhost:4040/admin/` check may return `HTTP/1.1 200 OK`
+- after the initial setup is completed, the `https://localhost:4040/admin/` check returns `HTTP/1.1 200 OK`
+- the response headers mention `Server: Kerio Connect`.
+
+### 5. Example outcome
+
+A successful default startup looks similar to this:
+
+```text
+NAME                IMAGE                         SERVICE         STATUS                 PORTS
+kerio-connect-lab   kerio-connect-kerio-connect   kerio-connect   Up 7 hours (healthy)   0.0.0.0:25->25/tcp, 0.0.0.0:443->443/tcp, 0.0.0.0:4040->4040/tcp, ...
+```
+
+And the web probe should return a successful response:
+
+```text
+HTTP/1.1 200 OK
+Server: Kerio Connect 10.0.9
+```
+
+At that point:
+
+- the container is healthy;
+- the admin page is reachable on port `4040`;
+- the initial access path may begin on `http://localhost:4040/admin/`;
+- after first-run completion, Kerio Connect redirects admin access to `https://localhost:4040/admin/`;
+- you can open `https://localhost:4040/admin` in a browser;
+- you will see either the vendor first-run wizard or the admin login page, depending on whether the lab has already been initialized.
+
+## Example input
+
+Example `.env` for a host where port `25` is already occupied and SMTP must be remapped:
+
+```dotenv
+CONTAINER_NAME=kerio-connect-lab
+KERIO_HOSTNAME=kerio-connect
+KERIO_AUTO_DOWNLOAD=1
+KERIO_VERSION_LABEL=
+KERIO_DOWNLOAD_URL=
+KERIO_DOWNLOAD_SHA256=
+KERIO_ADMIN_PORT=4040
+KERIO_HTTPS_PORT=443
+KERIO_SMTP_PORT=2525
+KERIO_SMTPS_PORT=465
+KERIO_SUBMISSION_PORT=587
+KERIO_IMAPS_PORT=993
+KERIO_POP3S_PORT=995
+KERIO_MEMORY_LIMIT=4g
+KERIO_CPUS=2.0
+```
+
+## Example output
+
+Example verification output from a healthy lab:
+
+```text
+Kerio Connect is running..
+Spider mode enabled. Check if remote file exists.
+HTTP/1.1 200 OK
+Server: Kerio Connect 10.0.9
+```
+
+## Verification checklist
+
+- [ ] Repository cloned successfully
+- [ ] `.env` prepared and reviewed
+- [ ] `docker compose config` completed without errors
+- [ ] `docker compose build` completed successfully
+- [ ] `docker compose up -d` started the lab
+- [ ] `docker compose ps` shows the service as `healthy`
+- [ ] expected ports are listening on the host
+- [ ] `http://localhost:4040/admin/` or `https://localhost:4040/admin/` is reachable, depending on setup state
+- [ ] the first-run wizard or admin login page opens in the browser
+
+## Troubleshooting
+
+### Problem: port 25 is already in use
+
+**Symptoms**
+
+- `docker compose up -d` fails with a bind error for port `25`
+- SMTP does not start on the expected host port
+
+**Cause**
+
+- another service, usually a local MTA such as `postfix`, is already listening on the host
+
+**Solution**
+
+```bash
+systemctl stop postfix || true
+sed -i 's/^KERIO_SMTP_PORT=25/KERIO_SMTP_PORT=2525/' .env
 docker compose up -d
 ```
 
-6. Open `https://localhost:4040/admin`.
+### Problem: build cannot find or download the Kerio installer
 
-## Debian Locale Note
+**Symptoms**
 
-Kerio Connect on Debian expects UTF-8 locales to exist for the UI languages used in administration. For this lab image, `en_US.UTF-8` and `ru_RU.UTF-8` are generated during the Docker build to avoid locale warnings in Kerio logs.
+- `docker compose build` fails during the installer resolution step
+- the build reports that no Kerio Connect Debian installer is available
 
-If you reproduce the setup on a plain Debian host outside this container, install and generate them explicitly:
+**Cause**
+
+- no local `.deb` exists in `artifacts/`
+- auto-download cannot reach the official archive
+- `KERIO_DOWNLOAD_URL` is empty or invalid
+
+**Solution**
 
 ```bash
-apt-get update
-apt-get install -y locales
-sed -i 's/^# *en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
-sed -i 's/^# *ru_RU.UTF-8 UTF-8/ru_RU.UTF-8 UTF-8/' /etc/locale.gen
-locale-gen en_US.UTF-8 ru_RU.UTF-8
-update-locale LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
+ls -la artifacts
+grep -E '^(KERIO_AUTO_DOWNLOAD|KERIO_VERSION_LABEL|KERIO_DOWNLOAD_URL|KERIO_DOWNLOAD_SHA256)=' .env
+docker compose build --no-cache
 ```
 
-## Official First-Run Scenario
+Then do one of the following:
 
-Follow the vendor wizard after the container is up:
+- place one official Kerio Connect `.deb` in `artifacts/`
+- set a valid official `KERIO_DOWNLOAD_URL`
+- keep `KERIO_AUTO_DOWNLOAD=1` and make sure the host can reach `cdn.kerio.com`
 
-1. Open `https://kerio_connect_server:4040/admin`.
-2. Choose the UI language.
-3. Accept the license agreement.
-4. Set the internet hostname and primary email domain.
-5. Create the administrator account.
-6. Choose the message store directory.
-7. If the built-in `Get a Trial License number` flow fails, request the 30-day trial manually at `https://gfi.ai/products-and-solutions/email-and-messaging-solutions/kerioconnect/free-trial`.
-8. Complete product registration with the received trial key or license file.
-9. After the first successful sign-in and baseline verification, create a backup or snapshot of the VM in Proxmox VE so you can roll back to a clean post-install state.
+### Problem: the admin page does not open
 
-Practical note:
+**Symptoms**
 
-- In the current lab build, the embedded legacy trial link may still point to `www.kerio.com/scripts/ctrl/ctrl.php` and return `404`, so the manual `Free Trial` URL above is the safer first-run path.
-- For this lab, treat the first PVE backup as part of the initial setup rather than an optional housekeeping step.
+- `https://localhost:4040/admin` is unreachable
+- the container stays in `health: starting` or `unhealthy`
 
-Official references:
+**Cause**
 
-- https://support.gfi.com/article/110739-initial-configuration-of-kerio-connect-after-installation
-- https://manuals.gfi.com/en/kerio/connect/content/installation-and-upgrade/performing-initial-configuration-in-kerio-connect-1567.html
-- https://manuals.gfi.com/en/kerio/connect/content/server-configuration/accessing-kerio-connect-administration-1161.html
-- https://support.kerioconnect.gfi.com/article/115515-obtaining-a-kerio-connect-license-key
+- the container is still starting
+- the chosen admin port differs from the default
+- Kerio did not start cleanly inside the container
 
-## Official Syslog Scenario
-
-After the first-run wizard, enable external logging in Kerio Connect Administration:
-
-1. Go to `Logs`.
-2. Open the log type you want to export.
-3. Right-click and choose `Log Settings`.
-4. Open the `External Logging` tab.
-5. Enable Syslog logging.
-6. Set the Syslog server as `<host>:<port>` if you need a custom port.
-
-For the neighboring Logstash project, the natural target is:
-
-- host: `host.docker.internal`
-- port: `5514`
-
-Official references:
-
-- https://support.kerioconnect.gfi.com/article/114245-syslog-logging-in-kerio-connect
-- https://support.kerioconnect.gfi.com/en-us/article/114385-configuring-log-settings-in-kerio-connect
-- https://manuals.gfi.com/en/kerio/connect/content/server-configuration/managing-logs-in-kerio-connect-1126.html
-
-## Log Path Notes
-
-GFI documents the default Linux log path as `/opt/kerio/mailserver/store/logs`. GFI also documents the `LogGlobal -> RelativePathsRoot` variable in `mailserver.cfg` as the path to the log files. That means a move to `/opt/kerio/logs` is supported in principle through configuration.
-
-Official references:
-
-- https://manuals.gfi.com/en/kerio/connect/content/server-configuration/managing-logs-in-kerio-connect-1126.html
-- https://support.kerioconnect.gfi.com/en-us/article/114340-editing-kerio-connect-configurations-to-use-the-correct-system-paths
-- https://support.kerioconnect.gfi.com/article/114788-modifying-the-mailserver-cfg
-
-This repository does two things:
-
-- It attempts a best-effort `mailserver.cfg` update through [`scripts/configure-log-root.sh`](scripts/configure-log-root.sh).
-- It also creates a compatibility symlink from the default `store/logs` location to `${KERIO_LOG_ROOT}` so the lab still works if the XML layout differs from what the helper script expects.
-
-## Smoke Checks
-
-Use these commands after startup:
+**Solution**
 
 ```bash
 docker compose ps
 docker compose logs --tail=200 kerio-connect
-curl -k https://localhost:4040/admin
+docker compose exec -T kerio-connect /usr/local/bin/healthcheck.sh
 ```
 
-Then verify:
+If you changed `KERIO_ADMIN_PORT` in `.env`, test that port instead of `4040`.
 
-- the container stays `healthy`
-- `https://localhost:4040/admin` responds
-- the first-run wizard or admin login page opens
-- the configured log types appear on the remote Syslog receiver
+### Problem: the built-in trial link returns 404
 
-## Help And Support
+**Symptoms**
 
-If you are trying to figure out whether a problem belongs to this repository or to Kerio Connect itself:
+- the first-run wizard sends you to an old `kerio.com` URL that no longer works
 
-- Use [SUPPORT.md](SUPPORT.md) for setup questions, bug reports, and operational troubleshooting.
-- Use [SECURITY.md](SECURITY.md) for anything that may expose credentials, mail data, or internet-facing mail services.
-- Use [CONTRIBUTING.md](CONTRIBUTING.md) before sending patches, especially for changes that affect persistence, licensing, CI, or first-run behavior.
+**Cause**
 
-## Limitations
+- the embedded Kerio Connect UI still references a legacy vendor trial link
 
-- This repository does not ship the Kerio installer; builds either download the official Linux DEB from the public Kerio archive or use a local `.deb` that you provide.
-- The runtime model is a lab wrapper around the Linux package, not an officially documented Docker deployment.
-- The `mailserver.cfg` XML schema is not documented in detail by GFI, so automatic log-root patching is intentionally conservative.
-- Automatic download depends on the current Kerio archive HTML structure and CDN availability, so local artifacts or pinned URLs are still the safer choice for reproducible builds.
-- Production use should prefer the vendor-supported Linux or virtual-appliance installation paths.
+**Solution**
+
+Use the current manual trial entry point:
+
+```text
+https://gfi.ai/products-and-solutions/email-and-messaging-solutions/kerioconnect/free-trial
+```
+
+## Limitations / Non-goals
+
+- This repository is not a production deployment model for Kerio Connect.
+- This repository does not ship the Kerio Connect installer or license material.
+- This repository is not a replacement for official vendor documentation or support.
+- This repository does not automate the full vendor first-run wizard.
+- This repository does not parse, normalize, enrich, or anonymize Kerio logs; that belongs to the other repositories in the project family.
+- This repository does not guarantee reproducible vendor package availability when auto-download is enabled; local artifacts or pinned URLs are safer for long-term repeatability.
+
+## Notes
+
+- Kerio Connect itself is proprietary third-party software from GFI / Kerio.
+- This repository wraps the official vendor package for lab use; it does not relicense or redistribute that software.
+- The repository license, once defined in [LICENSE](./LICENSE), applies only to the wrapper code, scripts, and documentation in this repository, not to Kerio Connect vendor binaries.
+- Default local verification does not require a public MX record. For basic first-run and admin access, a local hostname and browser access are enough.
+- During initial setup, the admin UI may be reachable over `http://localhost:4040/admin/`; after the setup is completed, normal admin access is expected to redirect to `https://localhost:4040/admin/`.
+- The current recommended external Syslog target pattern for the neighboring logging stack is `host.docker.internal:5514`.
+- After a successful first run, it is sensible to take a VM backup or snapshot before deeper experimentation.
+- The lab generates `en_US.UTF-8` and `ru_RU.UTF-8` during image build because Kerio administration expects UTF-8 locales to exist.
+
+## Roadmap
+
+See [NEXT_STEPS.md](./NEXT_STEPS.md)
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md)
+
+## Handoff
+
+See [HANDOFF.md](./HANDOFF.md) and [NEXT_STEPS.md](./NEXT_STEPS.md)
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md)
+
+## Security
+
+See [SECURITY.md](./SECURITY.md)
+
+## Support
+
+See [SUPPORT.md](./SUPPORT.md)
+
+## License
+
+See [LICENSE](./LICENSE)

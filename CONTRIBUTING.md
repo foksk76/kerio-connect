@@ -1,71 +1,69 @@
 # Contributing
 
-Thanks for helping improve the Kerio Connect lab wrapper.
+Thank you for your interest in contributing.
 
-## Scope
+## Ways to contribute
 
-This repository covers the Docker wrapper, scripts, CI workflow, and documentation around running the official Kerio Connect Linux package in a lab setting.
+You can help by:
+- reporting bugs;
+- improving documentation;
+- suggesting new dashboards, parsing rules, or examples;
+- fixing reproducibility issues;
+- improving beginner-friendliness.
 
-Changes that are in scope:
+## Before opening a pull request
 
-- Docker and Compose behavior
-- persistence, first-run, and log-export workflow
-- CI and release automation
-- operator documentation and troubleshooting notes
+Please:
+1. read the current `README.md`;
+2. verify your change locally;
+3. update documentation when behavior changes;
+4. keep examples realistic and safe to publish;
+5. avoid unrelated cleanup in the same pull request.
 
-Changes that are out of scope:
+## Documentation expectations
 
-- redistribution of Kerio Connect vendor binaries
-- reverse engineering or patching proprietary Kerio application code for general use
-- production deployment guarantees
+Documentation in this project family should be:
+- written in English;
+- practical and copy-paste friendly;
+- reproducible without hidden assumptions;
+- explicit about expected results and verification steps.
 
-## Before You Change Anything
+When changing documentation, please include:
+- exact commands where possible;
+- example input and output when relevant;
+- a short verification method;
+- notes about limitations or assumptions.
 
-1. Read [README.md](README.md), especially the quick start, first-run, syslog, and limitation sections.
-2. Enable local hooks once per clone:
+## Code and configuration changes
 
-```bash
-scripts/enable-git-hooks.sh
-```
+For code or configuration updates, please include:
+- a short explanation of the change;
+- expected behavior;
+- sample input/output when relevant;
+- version notes if compatibility is affected.
 
-3. If your change affects runtime behavior, validate it with the lab workflow:
+## Issues
 
-```bash
-docker compose build
-docker compose up -d
-docker compose ps
-docker compose logs --tail=200 kerio-connect
-```
+When reporting a problem, please include:
+- repository name;
+- environment details;
+- steps to reproduce;
+- actual result;
+- expected result;
+- logs, screenshots, or sample data if useful.
 
-## Contribution Guidelines
+## Sensitive data
 
-- Keep the repository ASCII-first unless a file already uses Unicode and there is a clear reason.
-- Do not commit vendor installers, license keys, or other secrets.
-- Prefer documented, reproducible workflows over one-off operator fixes.
-- When editing docs, keep `README.md` focused on onboarding and move deep operational detail into dedicated files when needed.
-- When editing release-facing behavior, update [CHANGELOG.md](CHANGELOG.md) with a short high-signal note.
+Do not include:
+- real credentials;
+- private email data;
+- non-anonymized production logs;
+- proprietary binaries or artifacts that cannot be redistributed.
 
-## Pull Requests
+## Pull request style
 
-Please include:
-
-- what changed
-- why it changed
-- how you validated it
-- any operator-visible impact
-
-If a change was only tested locally, say that explicitly.
-
-## Reporting Bugs
-
-Open an issue and include:
-
-- host OS and Docker / Compose version
-- whether the build used auto-download, `artifacts/`, or `KERIO_DOWNLOAD_URL`
-- relevant container logs
-- whether first run had already been completed
-- whether the problem is reproducible after `docker compose down` and `docker compose up -d`
-
-## Security
-
-For security-sensitive problems, do not open a public issue with secrets, exploit details, or mailbox contents. Follow [SECURITY.md](SECURITY.md) instead.
+Please keep pull requests:
+- focused;
+- easy to review;
+- documented;
+- consistent with the repository’s existing file naming and structure.

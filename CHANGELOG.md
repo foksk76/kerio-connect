@@ -7,6 +7,38 @@ It records releases, major repository changes, fixed bugs, operational milestone
 
 No unreleased changes are recorded yet.
 
+## v0.2.0 - 2026-04-05
+
+Stable release focused on repository maturity, reproducible onboarding, and explicit governance around the Kerio Connect lab wrapper.
+
+### Added
+
+- Apache 2.0 `LICENSE` for the repository wrapper code, scripts, and documentation.
+- `THIRD_PARTY_NOTICE.md` clarifying that Kerio Connect itself remains proprietary vendor software and is not distributed under the repository license.
+- Repository governance and contribution entry points through `CONTRIBUTING.md`, `SECURITY.md`, `SUPPORT.md`, `CODE_OF_CONDUCT.md`, issue templates, a pull request template, and release categories.
+
+### Changed
+
+- `README.md` was refactored to the shared project-family documentation standard with a structured quick start, example input/output, verification checklist, and troubleshooting flow.
+- Admin access guidance now explicitly documents the first-run `http://localhost:4040/admin/` path and the post-setup redirect to `https://localhost:4040/admin/`.
+- Support and security guidance were tightened to better separate public troubleshooting from sensitive reporting.
+
+### Fixed
+
+- GitHub-hosted CI now performs a stable smoke check that validates Kerio availability from inside the container and confirms published admin-port mapping.
+- Repository onboarding is clearer for new users because the main README and governance files now expose exact entry points for setup, contribution, support, and legal scope.
+
+### Operational Milestones
+
+- The repository now has a stable open-source license for the wrapper layer while preserving an explicit proprietary-software boundary for Kerio Connect itself.
+- The `0.2.x` release line now moves from alpha into a stable product release.
+
+### Related Commits
+
+- `c92b9a3` Fix GitHub Actions admin smoke check
+- `1b568e3` Fix CI smoke check on GitHub runners
+- `30cc22d` Release v0.2.0-alpha.2
+
 ## v0.2.0-alpha.2 - 2026-04-05
 
 Follow-up alpha focused on making the GitHub repository clearer for contributors and more reliable for GitHub-hosted CI.

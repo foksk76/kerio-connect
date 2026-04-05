@@ -1,43 +1,40 @@
 # Support
 
-This repository is a lab wrapper around the official Kerio Connect Linux package. Support is therefore split between repository-wrapper problems and vendor-product problems.
+## What this project aims to provide
 
-## Use This Repository For
+This repository aims to provide:
+- reproducible examples;
+- practical setup guidance;
+- beginner-friendly documentation;
+- reference configurations for lab or educational use.
 
-- Docker build failures in this repo
-- Compose runtime issues in this repo
-- persistence, first-run, logging, CI, and documentation problems
-- questions about how this lab is intended to be used
+## How to get help
 
-## Do Not Expect This Repository To Provide
+Please use GitHub Issues for:
+- bug reports;
+- documentation gaps;
+- setup problems;
+- reproducibility issues;
+- feature suggestions.
 
-- official GFI / Kerio product support
-- commercial licensing assistance from the repository maintainer
-- production architecture guidance
-- redistribution of vendor installers or license material
+## Before asking for help
 
-## Best Way To Ask For Help
+Please include:
+- operating system and version;
+- Docker / Python / Elasticsearch / Logstash / Grafana versions if relevant;
+- the exact step you are on;
+- the exact command you ran;
+- the exact error message;
+- relevant logs or screenshots.
 
-Open a GitHub issue and include:
+## Best-effort support
 
-- what you expected
-- what actually happened
-- host OS, Docker version, and Docker Compose version
-- whether you used auto-download, `artifacts/`, or an explicit `KERIO_DOWNLOAD_URL`
-- the relevant output from `docker compose ps` and `docker compose logs --tail=200 kerio-connect`
+Support is provided on a best-effort basis.
 
-## Before Opening An Issue
+## Important
 
-Try these checks first:
-
-```bash
-docker compose ps
-docker compose logs --tail=200 kerio-connect
-curl -k https://localhost:4040/admin
-```
-
-Then compare what you see with [README.md](README.md), [HANDOFF.md](HANDOFF.md), and [NEXT_STEPS.md](NEXT_STEPS.md).
-
-## Security-Sensitive Problems
-
-If the report involves credentials, mailbox data, private infrastructure details, or an exploitable condition, use [SECURITY.md](SECURITY.md) instead of a normal public issue.
+Please do not post:
+- real credentials;
+- real private email data;
+- non-anonymized production logs;
+- proprietary vendor artifacts that cannot be legally redistributed.
