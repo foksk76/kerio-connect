@@ -6,10 +6,10 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-04-05 01:15:36 UTC
+- Updated: 2026-04-05 01:18:33 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `44c4a50` - Release v0.2.0-alpha.1
+- Base HEAD: `c92b9a3` - Fix GitHub Actions admin smoke check
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 1GB`
 - Postfix service: `inactive`
@@ -28,7 +28,7 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Compose Status
 
-- `kerio-connect`: Up 24 minutes (healthy), health `healthy`
+- `kerio-connect`: Up 27 minutes (healthy), health `healthy`
 
 ## Pending Change Areas
 
@@ -40,11 +40,11 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Pending Diffstat
 
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ 1 file changed, 2 insertions(+), 17 deletions(-)
 
 ```
- .github/workflows/docker-image.yml | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ .github/workflows/docker-image.yml | 19 ++-----------------
+ 1 file changed, 2 insertions(+), 17 deletions(-)
 ```
 
 ## Resume Notes

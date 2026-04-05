@@ -94,23 +94,8 @@ jobs:
 
       - name: Smoke check admin endpoint
         run: |
-          python3 - <<'PY'
-          import os
-          import ssl
-          import urllib.request
-
-          port = os.environ["KERIO_ADMIN_PORT"]
-          url = f"https://127.0.0.1:{port}/admin/"
-          request = urllib.request.Request(url, method="GET")
-
-          with urllib.request.urlopen(
-              request,
-              context=ssl._create_unverified_context(),
-              timeout=30,
-          ) as response:
-              if response.status >= 400:
-                  raise SystemExit(f"Unexpected HTTP status from {url}: {response.status}")
-          PY
+          docker exec "${CONTAINER_NAME}" /usr/local/bin/healthcheck.sh
+          docker port "${CONTAINER_NAME}" 4040 | grep -Fq ":${KERIO_ADMIN_PORT}"
 
       - name: Show compose state on failure
         if: failure()
