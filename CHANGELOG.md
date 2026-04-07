@@ -7,6 +7,26 @@ It records releases, major repository changes, fixed bugs, operational milestone
 
 No unreleased changes are recorded yet.
 
+## v0.2.2 - 2026-04-07
+
+Patch release focused on Quick Start wording clarity for lab engineers. No runtime behavior changed.
+
+### Changed
+
+- Quick Start now introduces the setup sequence as a work plan instead of an immediate instruction block, so readers can see the order of work before running commands.
+- README guidance now explicitly says to copy `.env.example` to `.env` and review host-specific parameters before building the lab.
+- Repository structure wording now describes `.env.example` as example build parameters, ports, resource limits, and volume names.
+
+### Validation
+
+- README structure was verified against the shared English and Russian templates.
+- Markdown whitespace validation passed for the updated README files.
+- No Docker, Compose, Kerio runtime, port mapping, or CI workflow behavior changed in this patch.
+
+### Related Commits
+
+- `6795f16` Clarify README quick start wording
+
 ## v0.2.1 - 2026-04-07
 
 Patch release focused on project-family README alignment and bilingual onboarding for lab engineers. No runtime behavior changed.

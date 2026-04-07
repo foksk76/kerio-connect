@@ -6,10 +6,10 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-04-07 14:36:08 UTC
+- Updated: 2026-04-07 14:36:28 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `631e513` - Release v0.2.1
+- Base HEAD: `6795f16` - Clarify README quick start wording
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 1GB`
 - Postfix service: `inactive`
@@ -36,17 +36,15 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Pending Source Files
 
-- `README.md`
-- `README.ru.md`
+- `CHANGELOG.md`
 
 ## Pending Diffstat
 
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ 1 file changed, 20 insertions(+)
 
 ```
- README.md    |  6 +++---
- README.ru.md | 14 +++++++-------
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ CHANGELOG.md | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 ```
 
 ## Resume Notes
