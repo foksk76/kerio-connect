@@ -6,14 +6,14 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-04-05 08:28:08 UTC
+- Updated: 2026-04-07 14:16:34 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `30cc22d` - Release v0.2.0-alpha.2
+- Base HEAD: `41be738` - Release v0.2.0
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 1GB`
 - Postfix service: `inactive`
-- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=449,fd=4))`
+- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=448,fd=4))`
 
 ## Recorded Lab State
 
@@ -28,7 +28,7 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Compose Status
 
-- `kerio-connect`: Up 8 hours (healthy), health `healthy`
+- `kerio-connect`: Up 2 hours (healthy), health `healthy`
 
 ## Pending Change Areas
 
@@ -36,27 +36,19 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Pending Source Files
 
-- `CHANGELOG.md`
 - `CONTRIBUTING.md`
-- `LICENSE`
 - `README.md`
-- `SECURITY.md`
-- `SUPPORT.md`
-- `THIRD_PARTY_NOTICE.md`
+- `README.ru.md`
 
 ## Pending Diffstat
 
- 7 files changed, 692 insertions(+), 279 deletions(-)
+ 3 files changed, 666 insertions(+), 204 deletions(-)
 
 ```
- CHANGELOG.md          |  32 +++
- CONTRIBUTING.md       | 136 +++++++------
- LICENSE               | 156 +++++++++++++++
- README.md             | 528 +++++++++++++++++++++++++++++++++++---------------
- SECURITY.md           |  51 ++---
- SUPPORT.md            |  61 +++---
- THIRD_PARTY_NOTICE.md |   7 +
- 7 files changed, 692 insertions(+), 279 deletions(-)
+ CONTRIBUTING.md |   2 +
+ README.md       | 409 +++++++++++++++++++++++++-------------------------
+ README.ru.md    | 459 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 666 insertions(+), 204 deletions(-)
 ```
 
 ## Resume Notes

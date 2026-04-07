@@ -28,6 +28,8 @@ Documentation in this project family should be:
 - reproducible without hidden assumptions;
 - explicit about expected results and verification steps.
 
+Russian README updates are welcome when they help lab onboarding, but English remains the canonical language for project documentation, reviews, issues, and release notes.
+
 When changing documentation, please include:
 - exact commands where possible;
 - example input and output when relevant;
