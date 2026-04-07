@@ -7,6 +7,30 @@ It records releases, major repository changes, fixed bugs, operational milestone
 
 No unreleased changes are recorded yet.
 
+## v0.2.1 - 2026-04-07
+
+Patch release focused on project-family README alignment and bilingual onboarding for lab engineers. No runtime behavior changed.
+
+### Added
+
+- Russian onboarding README for quick lab orientation and translation parity with the English README.
+
+### Changed
+
+- The main README now follows the shared Kerio Connect Monitoring & Logging project-family structure, including the required language switcher, quick-start flow, verification checklist, troubleshooting sections, governance links, and GitHub Release Notes guidance.
+- Documentation language guidance now clarifies that English remains canonical for project documentation, reviews, issues, and release notes, while Russian README updates are welcome for lab onboarding.
+- README terminology now uses engineer-focused wording for the target audience and release-note guidance.
+
+### Validation
+
+- README structure was verified against the shared English and Russian templates.
+- Markdown whitespace validation passed for the updated README files.
+- No Docker, Compose, Kerio runtime, port mapping, or CI workflow behavior changed in this patch.
+
+### Related Commits
+
+- `7ed8233` Standardize bilingual README onboarding
+
 ## v0.2.0 - 2026-04-05
 
 Stable release focused on repository maturity, reproducible onboarding, and explicit governance around the Kerio Connect lab wrapper.
