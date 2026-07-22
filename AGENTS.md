@@ -2,6 +2,15 @@
 
 Docker-based lab environment wrapping the official Kerio Connect Debian package on Debian 13. No application source code to compile — the "build" is a Docker image containing vendor binaries.
 
+## Lab Purpose
+
+- Reproducible local lab for safe Kerio Connect testing before production use.
+- Source system for the **Kerio Connect Monitoring & Logging** project family.
+- Sends syslog to `elastic.homelab:5514` for parsing, storage, and visualization.
+- Provides log samples for `kerio-syslog-anonymizer` (safe public sharing).
+
+Not a production deployment. Does not parse, anonymize, or store logs itself.
+
 ## Quick Commands
 
 ```bash

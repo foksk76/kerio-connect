@@ -155,7 +155,7 @@ First stable release of the Debian 13 / Docker-based Kerio Connect lab.
 - First-run setup completed successfully for `kerio.lo`.
 - Administrative mailbox `doge@kerio.lo` was created and retained across restarts.
 - Trial licensing survived restart and the lab now starts in a registered state.
-- External Syslog was enabled for `mail`, `operations`, `security`, `spam`, and `audit` to `elastic.lo:5514` with application name `kerio`.
+- External Syslog was enabled for `mail`, `operations`, `security`, `spam`, and `audit` to `elastic.homelab:5514` with application name `kerio`.
 - End-to-end local mail delivery was validated with a test message delivered to `doge@kerio.lo`.
 
 ### Related Commits

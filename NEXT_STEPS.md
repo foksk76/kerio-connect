@@ -1,6 +1,6 @@
 # Next Steps
 
-Generated automatically on 2026-07-22 13:02:37 UTC.
+Generated automatically on 2026-07-22 13:09:01 UTC.
 
 ## Current Observed State
 
@@ -16,11 +16,11 @@ Generated automatically on 2026-07-22 13:02:37 UTC.
 - Message store: `/opt/kerio/mailserver/store/`
 - License note: `Built-in trial link points to the legacy kerio.com trial URL and currently returns HTTP 404; use the manual GFI Free Trial URL from README.md.`
 - DNS note: `HomeLab DNS publishes kerio.lo as an internal A record only; no MX record is expected in this lab. External GFI hosts still resolve from inside the container, so the telemetry DNS warning is tracked separately.`
-- Syslog note: `External Syslog is enabled for mail, operations, security, spam, and audit to elastic.lo:5514 with application name kerio.`
+- Syslog note: `External Syslog is enabled for mail, operations, security, spam, and audit to elastic.homelab:5514 with application name kerio.`
 
 ## Compose Status
 
-- `kerio-connect`: Up 24 minutes (healthy), health `healthy`
+- `kerio-connect`: Up 30 minutes (healthy), health `healthy`
 
 ## Immediate Steps
 
@@ -34,7 +34,7 @@ Generated automatically on 2026-07-22 13:02:37 UTC.
    - `/opt/kerio/mailserver/license`
    - `/opt/kerio/mailserver/store`
 5. Confirm that `scripts/configure-log-root.sh` still matches the real `mailserver.cfg` shape and that logs can be redirected to `/opt/kerio/logs`.
-6. Verify remote Syslog delivery for `mail`, `operations`, `security`, `spam`, and `audit` on `elastic.lo:5514` with application name `kerio`.
+6. Verify remote Syslog delivery for `mail`, `operations`, `security`, `spam`, and `audit` on `elastic.homelab:5514` with application name `kerio`.
 
 ## Commit Automation
 

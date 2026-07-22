@@ -6,10 +6,10 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-07-22 13:02:37 UTC
+- Updated: 2026-07-22 13:09:01 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `3366d59` - Release v0.2.2
+- Base HEAD: `63a764e` - Add AGENTS.md, fix documentation inconsistencies
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 1GB`
 - Postfix service: `inactive`
@@ -24,36 +24,35 @@ This file captures the current working state of the Kerio Connect lab repository
 - Message store: `/opt/kerio/mailserver/store/`
 - License note: `Built-in trial link points to the legacy kerio.com trial URL and currently returns HTTP 404; use the manual GFI Free Trial URL from README.md.`
 - DNS note: `HomeLab DNS publishes kerio.lo as an internal A record only; no MX record is expected in this lab. External GFI hosts still resolve from inside the container, so the telemetry DNS warning is tracked separately.`
-- Syslog note: `External Syslog is enabled for mail, operations, security, spam, and audit to elastic.lo:5514 with application name kerio.`
+- Syslog note: `External Syslog is enabled for mail, operations, security, spam, and audit to elastic.homelab:5514 with application name kerio.`
 
 ## Compose Status
 
-- `kerio-connect`: Up 24 minutes (healthy), health `healthy`
+- `kerio-connect`: Up 30 minutes (healthy), health `healthy`
 
 ## Pending Change Areas
 
+- Commit-time doc automation updated.
 - Build and runtime configuration changed.
 - Project documentation refreshed.
 
 ## Pending Source Files
 
-- `.env.example`
+- `.lab-state.env`
 - `AGENTS.md`
-- `README.md`
-- `README.ru.md`
-- `SUPPORT.md`
+- `CHANGELOG.md`
+- `scripts/update-commit-docs.sh`
 
 ## Pending Diffstat
 
- 5 files changed, 109 insertions(+), 3 deletions(-)
+ 4 files changed, 12 insertions(+), 3 deletions(-)
 
 ```
- .env.example |   3 +-
- AGENTS.md    | 105 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- README.md    |   1 +
- README.ru.md |   1 +
- SUPPORT.md   |   2 +-
- 5 files changed, 109 insertions(+), 3 deletions(-)
+ .lab-state.env                | 2 +-
+ AGENTS.md                     | 9 +++++++++
+ CHANGELOG.md                  | 2 +-
+ scripts/update-commit-docs.sh | 2 +-
+ 4 files changed, 12 insertions(+), 3 deletions(-)
 ```
 
 ## Resume Notes

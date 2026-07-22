@@ -211,7 +211,7 @@ else
 fi
 
 if [ -n "${kerio_syslog_note}" ]; then
-  sixth_step="Verify remote Syslog delivery for \`mail\`, \`operations\`, \`security\`, \`spam\`, and \`audit\` on \`elastic.lo:5514\` with application name \`kerio\`."
+  sixth_step="Verify remote Syslog delivery for \`mail\`, \`operations\`, \`security\`, \`spam\`, and \`audit\` on \`elastic.homelab:5514\` with application name \`kerio\`."
 else
   sixth_step="Enable external Syslog logging in Kerio Connect Administration and point it at the Logstash receiver once the wizard is complete."
 fi
