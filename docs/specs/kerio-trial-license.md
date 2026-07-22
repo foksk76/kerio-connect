@@ -237,16 +237,42 @@ When loaded, the license is stored in TinyDB with these variables:
 
 ## 11. Related Functions
 
-| Function | Address | Role |
-|---|---|---|
-| `KLicense::parseMainData` | `0x15826b0` | Parse key-value pairs |
-| `KLicense::checkLicenseSignature` | `0x1583f30` | Verify RSA signature |
-| `KLicense::fixProductID` | `0x1581e30` | Normalize Product ID |
-| `KLicenseInternal::list` | `0x1581cf0` | Serialize to string |
-| `KLicenseManager::check_license` | `0x15821a0` | 9-step validation |
-| `KLicenseManager::load_license` | `0x1582de0` | Load from file |
-| `KLicenseManager::make_trial_license` | `0x1582c20` | Generate trial license |
-| `KLicenseManager::admin_set_license` | `0x1584780` | Install via Admin UI |
-| `read_date` | `0x1581ab0` | Parse date format |
-| `RSAPublicDecrypt` | `0x15814f0` | RSA decryption |
+### File Parsing
+
+| Function | Address | Size | Role |
+|---|---|---|---|
+| `read_line` | `0x15842d0` | 327 | Read one line from file stream |
+| `separateValueFromLine` | `0x15845d0` | 487 | Split `Key: Value` on `:` delimiter |
+| `findLicenseBeginning` | `0x1584420` | 424 | Scan for `--LICENSE--` marker |
+| `loadFrom` | `0x1587340` | 3216 | Full file parser (sections + signatures + key-value) |
+| `parseMainData` | `0x15826b0` | 1698 | Parse key-value fields (21 recognized keys) |
+| `checkLicenseSignature` | `0x1583f30` | 921 | Verify RSA1024+MD5 signature |
+| `convertDataToMD5Stream` | `0x1581be0` | — | Compute MD5 hash |
+| `RSAPublicDecrypt` | `0x15814f0` | — | RSA decrypt |
+| `RSAPublicBlock` | `0x1580f10` | — | Core RSA modpow |
+
+### Feature Sub-block Handling
+
+| Function | Address | Size | Role |
+|---|---|---|---|
+| `KLicensePart::add` | `0x15847c0` | 741 | Add key-value to feature sub-block |
+| `KLicensePart::get` | `0x1582050` | 246 | Retrieve field from feature sub-block |
+| `KLicensePart::set` | `0x1584ae0` | 323 | Set fields from map |
+| `KLicenseInternal::getString` | `0x1582ea0` | 320 | Get field value (string) |
+| `KLicenseInternal::getInt` | `0x1583b50` | 197 | Get field value (int) |
+| `KLicenseInternal::getDate` | `0x15838c0` | 205 | Get field value (time_t) |
+| `KLicenseInternal::haveFeature` | `0x1582d60` | 285 | Check if feature exists |
+
+### Validation & Management
+
+| Function | Address | Size | Role |
+|---|---|---|---|
+| `KLicense::fixProductID` | `0x1581e30` | 532 | Normalize product ID |
+| `KLicense::setData` | `0x1584e20` | 504 | Set internal data from parsed values |
+| `KLicenseInternal::list` | `0x1581cf0` | 155 | Serialize license to string |
+| `KLicenseManager::check_license` | `0x15821a0` | 688 | 9-step validation |
+| `KLicenseManager::load_license` | `0x1587fd0` | 663 | Load from file |
+| `KLicenseManager::make_trial_license` | `0x1586380` | 244 | Generate trial license |
+| `KLicenseManager::admin_set_license` | `0x1588270` | 1717 | Install via Admin UI |
+| `read_date` | `0x1581ab0` | 299 | Parse date format `"%d %s %d"` |
 | `convertDataToMD5Stream` | `0x1581be0` | MD5 hash computation |

@@ -91,13 +91,44 @@ Parsed by `read_date` at `0x1581ab0` using `sscanf(date_string, "%d %s %d", ...)
 
 ### Parsed Field Names (`KLicense::parseMainData`)
 
-Fields recognized by the parser at `0x15826b0`:
+All 21 fields recognized by the parser at `0x15826b0` (verified from binary `.rodata`):
 
 ```
 Product, Product-ID, Version, Edition, Min-Version,
 Base-ID, Company, Person, E-Mail, Host-ID,
-Features, License-Expires, Subscription-Expires
+Features, License-Expires, Subscription-Expires,
+Antivirus-Expires, Warranty-Expires, License-Type,
+License-Version, License-Info, Comment,
+Format-Version, OS
 ```
+
+Key→struct mapping (offsets within `KLicense`):
+
+| Key string | Stored at offset | Type | Setter |
+|---|---|---|---|
+| `Product` | 0x10 | `std::string` | implicit |
+| `Product-ID` | 0x18 | `int` | `strtol` |
+| `Version` | 0x38 | `std::string` | implicit |
+| `Edition` | 0x50 | `std::string` | implicit |
+| `Min-Version` | (passed to `checkMinimalVersion`) | — | — |
+| `Base-ID` | 0x88+ | `std::string` | implicit |
+| `Company` | 0x90 | `std::string` | implicit |
+| `Person` | (stored in part map) | `std::string` | implicit |
+| `E-Mail` | 0xa0 | `std::string` | implicit |
+| `Host-ID` | (stored in part map) | `std::string` | implicit |
+| `Features` | 0xc8 | `std::string` | implicit |
+| `License-Expires` | 0x78 | `time_t` | `setDateImpl` |
+| `Subscription-Expires` | 0x80 | `time_t` | `setDateImpl` |
+| `Antivirus-Expires` | (stored in part map) | `time_t` | `setDateImpl` |
+| `Warranty-Expires` | (stored in part map) | `time_t` | `setDateImpl` |
+| `License-Type` | 0xb8 | `int` | implicit |
+| `License-Version` | (stored in part map) | `int` | `strtol` |
+| `License-Info` | (stored in part map) | `std::string` | implicit |
+| `Comment` | (stored in part map) | `std::string` | implicit |
+| `Format-Version` | (stored in part map) | `int` | `strtol` |
+| `OS` | 0x60 | `std::string` | implicit |
+
+**Note:** Fields not mapped to a fixed `KLicense` offset are stored in a `std::map<std::string, KLicensePart>` via `KLicensePart::add`.
 
 ---
 
@@ -154,13 +185,31 @@ return (memcmp(plaintext[0..15], MD5_hash) == 0)
 
 ### 4.1 License Loading (`KLicenseManager::load_license`)
 
-**Function:** `0x1582de0`
+**Function:** `0x1587fd0` (663 bytes)
 
 1. Open the license file as `KFile`.
-2. Call `KLicense::findLicenseBeginning(KFile&)` at `0x1583940` — scans for `--LICENSE--` marker.
-3. Call `KLicense::loadFrom(string&)` at `0x15838c0` — loads content into `KLicense` object.
-4. Call `KLicense::checkLicenseSignature(KLicense*, char*, int)` at `0x1583f30` — verifies signature.
-5. Call `KLicenseInternal::checkLicense(KLicense*, char*, int)` — validates business rules.
+2. Call `KLicense::findLicenseBeginning(KFile&)` at `0x1584420` — scans for `--LICENSE--` marker.
+3. Call `KLicense::loadFrom(const string&)` at `0x1587340` — full file parser (3216 bytes).
+4. Call `KLicense::checkLicenseSignature` at `0x1583f30` — verifies RSA signature per section.
+5. Call `KLicenseInternal::checkLicense` — validates business rules.
+
+### 4.1.1 `KLicense::loadFrom` Internal Flow (`0x1587340`)
+
+**Function:** `0x1587340` (3216 bytes)
+
+1. Open file with `fopen(path, "rb")`.
+2. Call `findLicenseBeginning` to seek past `--LICENSE--` marker.
+3. **Main loop:** Read lines via `read_line` (`0x15842d0`), split with `separateValueFromLine` (`0x15845d0`):
+   - Compare key string via `iEqual` against section markers:
+     - `"--SIGNATURE--"` → compute MD5, verify RSA signature (`checkLicenseSignature`)
+     - `"--END--"` → end of Section A
+     - `"--PRODUCT-LICENSE--"` → set flag, switch to Section B parsing
+     - `"Feature-Begin"` → start new feature sub-block via `KLicensePart::add`
+     - `"Feature-End"` → close feature sub-block
+     - `"--PRODUCT-END--"` → end of Section B
+   - For unknown keys: call `parseMainData` to map key to `KLicense` struct offset.
+4. Signature verification per section: `convertDataToMD5Stream` → `checkLicenseSignature` (RSA1024+MD5).
+5. **Section B additional fields:** `License-Type`, `License-Version`, `Format-Version`, `Product-ID`, `OS` are parsed via `iEqual` + `strtol`/`parseMainData`.
 
 ### 4.2 `KLicenseInternal::list`
 
@@ -219,7 +268,7 @@ Normalizes the product ID field after loading. Product ID enum:
    - Expired → RC=3 "License is expired"
 7. Compare `KLicense+0x80` (subscription expiry) vs `read_date(manager+0x38)` (current date)
    - Expired → RC=4 "Software Maintenance is expired"
-8. Call custom callback at `KLicense+0x50` (function pointer) with `(license, error_buffer, ecx)`
+8. Call custom callback at `KLicenseInternal+0x50` (function pointer) with `(license, error_buffer, ecx)`
    - Returns 0 → RC=5 "License is OK" (degraded mode), call `licenseFail`
 9. All pass → call `licenseOk` → RC=0
 
@@ -260,7 +309,7 @@ Validates promotional/trial licenses. Likely checks expiry and feature flags.
 
 ### 5.1 `KLicenseManager::make_trial_license`
 
-**Function:** `0x1582c20`
+**Function:** `0x1586380` (244 bytes)
 
 Generates a trial license with default parameters. Called during initial setup when no license file exists.
 
@@ -455,35 +504,70 @@ TinydbLicenseVariableSubscriptionExpires
 
 ### Core Validation
 
-| Function | Address | Description |
-|---|---|---|
-| `KLicensePubKey` | `0x1581080` | Constructs 1024-bit RSA public key |
-| `RSAPublicDecrypt` | `0x15814f0` | RSA public decrypt (128 bytes) |
-| `RSAPublicBlock` | `0x1580f10` | Core RSA modular exponentiation |
-| `convertDataToMD5Stream` | `0x1581be0` | MD5 hash computation |
-| `KLicense::checkLicenseSignature` | `0x1583f30` | Signature verification |
-| `KLicense::findLicenseBeginning` | `0x1583940` | Scan for `--LICENSE--` marker |
-| `KLicense::loadFrom` | `0x15838c0` | Parse file content into object |
-| `KLicense::parseMainData` | `0x15826b0` | Parse key-value fields |
-| `KLicense::fixProductID` | `0x1581e30` | Normalizes product ID |
-| `KLicenseInternal::list` | `0x1581cf0` | Serializes license to string |
+| Function | Address | Size | Description |
+|---|---|---|---|
+| `KLicensePubKey` | `0x1581080` | 217 | Constructs 1024-bit RSA public key |
+| `RSAPublicDecrypt` | `0x15814f0` | — | RSA public decrypt (128 bytes) |
+| `RSAPublicBlock` | `0x1580f10` | — | Core RSA modular exponentiation |
+| `convertDataToMD5Stream` | `0x1581be0` | — | MD5 hash computation |
+| `KLicense::checkLicenseSignature` | `0x1583f30` | 921 | Signature verification |
+| `KLicense::findLicenseBeginning` | `0x1584420` | 424 | Scan for `--LICENSE--` marker |
+| `KLicense::loadFrom` | `0x1587340` | 3216 | Full file parser (sections + signatures + key-value) |
+| `KLicense::parseMainData` | `0x15826b0` | 1698 | Parse key-value fields (21 recognized keys) |
+| `KLicense::fixProductID` | `0x1581e30` | 532 | Normalizes product ID |
+| `KLicense::setData` | `0x1584e20` | 504 | Sets internal data from parsed values |
+| `KLicenseInternal::list` | `0x1581cf0` | 155 | Serializes license to string |
+| `KLicenseInternal::getString` | `0x1582ea0` | 320 | Retrieves field by key (string) |
+| `KLicenseInternal::getInt` | `0x1583b50` | 197 | Retrieves field by key (int) |
+| `KLicenseInternal::getDate` | `0x15838c0` | 205 | Retrieves field by key (date/time_t) |
+| `KLicenseInternal::haveFeature` | `0x1582d60` | 285 | Checks if named feature is present |
+| `KLicenseInternal::add` | `0x1586d30` | 1138 | Adds field to internal map |
+| `KLicenseInternal::set` | `0x1584cc0` | 352 | Sets all fields from map |
+
+### File Parsing (low-level)
+
+| Function | Address | Size | Description |
+|---|---|---|---|
+| `read_line` | `0x15842d0` | 327 | Reads one line from `KStream`, trims CR/LF |
+| `separateValueFromLine` | `0x15845d0` | 487 | Splits `Key: Value` on `:` delimiter |
+
+### Feature Sub-block Handling
+
+| Function | Address | Size | Description |
+|---|---|---|---|
+| `KLicensePart::add` | `0x15847c0` | 741 | Adds key-value to named feature sub-block |
+| `KLicensePart::set` | `0x1584ae0` | 323 | Sets fields from `std::map` |
+| `KLicensePart::clear` | `0x1584ab0` | 43 | Clears all fields |
+| `KLicensePart::get` | `0x1582050` | 246 | Retrieves field value by key |
+| `KLicense::haveFeature` | `0x1582e80` | 21 | Checks feature (inline wrapper) |
+| `KLicense::getFeatureID` | `0x1583cf0` | 204 | Gets feature ID string |
+| `KLicense::getFeatureUsers` | `0x1583c20` | 204 | Gets feature user limit |
+| `KLicense::getFeatureLicenseExpiration` | `0x1583a70` | 210 | Gets feature license expiry |
+| `KLicense::getFeatureSubscriptionExpiration` | `0x1583990` | 210 | Gets feature subscription expiry |
+| `KLicense::listFeatures` | `0x1583f10` | 21 | Lists all feature names |
 
 ### License Management
 
-| Function | Address | Description |
-|---|---|---|
-| `KLicenseManager::checkMinimalVersion` | `0x15819f0` | Parses `"%d.%d.%d"`, compares major.minor.patch |
-| `KLicenseManager::isLicenseOk` | `0x157f890` | High-level license health check |
-| `KLicenseManager::check_license` | `0x15821a0` | Full business-rule validation |
-| `KLicenseManager::initial_check_license` | `0x1582450` | Extended validation chain (version+domain) |
-| `KLicenseManager::load_license` | `0x1582de0` | Load from file |
-| `KLicenseManager::admin_set_license` | `0x1584780` | Admin UI license installation |
-| `KLicenseManager::make_trial_license` | `0x1582c20` | Generate trial license |
-| `KLicenseManager::licenseOk` | `0x157f850` | Sets state=1, calls OK callback |
-| `KLicenseManager::licenseFail` | `0x157f860` | Sets state=0, calls Fail callback |
-| `KLicenseManager::defaultOkFunction` | `0x157f870` | Default OK callback (returns 1) |
-| `KLicenseInternal::setNullLicense` | `0x157f7f0` | Initialize null/expired state |
-| `KLicenseInternal::checkLicense` | `0x157f8d0` | Internal install/check |
+| Function | Address | Size | Description |
+|---|---|---|---|
+| `KLicenseManager::init` | `0x1585260` | 551 | Initialize manager with product params |
+| `KLicenseManager::set_license` | `0x1585020` | 9 | Sets active license pointer |
+| `KLicenseManager::get_license` | `0x157f840` | 5 | Gets active license pointer |
+| `KLicenseManager::setBoxOS` | `0x1582150` | 70 | Sets target OS string |
+| `KLicenseManager::checkMinimalVersion` | `0x15819f0` | 190 | Parses `"%d.%d.%d"`, compares major.minor.patch |
+| `KLicenseManager::isLicenseOk` | `0x157f890` | 12 | High-level license health check |
+| `KLicenseManager::check_license` | `0x15821a0` | 688 | Full business-rule validation |
+| `KLicenseManager::initial_check_license` | `0x1582450` | 593 | Extended validation chain (version+domain) |
+| `KLicenseManager::load_license` | `0x1587fd0` | 663 | Load from file |
+| `KLicenseManager::admin_set_license` | `0x1588270` | 1717 | Admin UI license installation |
+| `KLicenseManager::make_trial_license` | `0x1586380` | 244 | Generate trial license |
+| `KLicenseManager::licenseOk` | `0x157f850` | 13 | Sets state=1, calls OK callback |
+| `KLicenseManager::licenseFail` | `0x157f860` | 13 | Sets state=0, calls Fail callback |
+| `KLicenseManager::defaultOkFunction` | `0x157f870` | 6 | Default OK callback (returns 1) |
+| `KLicenseManager::defaultFailFunction` | `0x157f880` | 6 | Default Fail callback |
+| `KLicenseManager::getTrialExpiration` | `0x1588930` | 3 | Gets trial expiry (inline) |
+| `KLicenseInternal::setNullLicense` | `0x157f7f0` | — | Initialize null/expired state |
+| `KLicenseInternal::checkLicense` | `0x157f8d0` | — | Internal install/check |
 
 ### Date/Time Parsing
 
