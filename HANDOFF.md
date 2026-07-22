@@ -6,14 +6,14 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-07-22 13:28:24 UTC
+- Updated: 2026-07-22 13:54:15 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `89f72e2` - Normalize syslog hostname to elastic.homelab, add Lab Purpose to AGENTS.md
+- Base HEAD: `ccde6c1` - Normalize lab domain to kerio.homelab
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
-- Kerio image: `kerio-connect-kerio-connect:latest 1GB`
+- Kerio image: `kerio-connect-kerio-connect:latest 886MB`
 - Postfix service: `inactive`
-- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=26232,fd=4))`
+- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=38355,fd=4))`
 
 ## Recorded Lab State
 
@@ -33,27 +33,22 @@ This file captures the current working state of the Kerio Connect lab repository
 ## Pending Change Areas
 
 - Build and runtime configuration changed.
-- Project documentation refreshed.
 
 ## Pending Source Files
 
 - `.env.example`
-- `.lab-state.env`
-- `CHANGELOG.md`
 - `docker-compose.yml`
 - `scripts/entrypoint.sh`
 
 ## Pending Diffstat
 
- 5 files changed, 35 insertions(+), 9 deletions(-)
+ 3 files changed, 27 insertions(+), 20 deletions(-)
 
 ```
  .env.example          |  1 +
- .lab-state.env        |  8 ++++----
- CHANGELOG.md          | 10 +++++-----
  docker-compose.yml    |  1 +
- scripts/entrypoint.sh | 24 ++++++++++++++++++++++++
- 5 files changed, 35 insertions(+), 9 deletions(-)
+ scripts/entrypoint.sh | 45 +++++++++++++++++++++++++--------------------
+ 3 files changed, 27 insertions(+), 20 deletions(-)
 ```
 
 ## Resume Notes

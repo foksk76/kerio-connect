@@ -1,14 +1,14 @@
 # Next Steps
 
-Generated automatically on 2026-07-22 13:28:24 UTC.
+Generated automatically on 2026-07-22 13:54:15 UTC.
 
 ## Current Observed State
 
 - Repository path: `/root/kerio-connect`
 - Branch: `main`
-- Kerio image: `kerio-connect-kerio-connect:latest 1GB`
+- Kerio image: `kerio-connect-kerio-connect:latest 886MB`
 - Postfix service: `inactive`
-- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=26232,fd=4))`
+- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=38355,fd=4))`
 - First run: `completed`
 - Admin account: `doge@kerio.homelab`
 - Primary domain: `kerio.homelab`

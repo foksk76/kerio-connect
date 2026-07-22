@@ -16,6 +16,7 @@ services:
       KERIO_STORE_ROOT: /var/lib/kerio/store
       KERIO_LOG_ROOT: ${KERIO_LOG_ROOT:-/opt/kerio/logs}
       KERIO_DOMAIN: ${KERIO_DOMAIN:-}
+      SYSLOG_HOST: ${SYSLOG_HOST:-}
     ports:
       - "${KERIO_ADMIN_PORT:-4040}:4040"
       - "${KERIO_HTTPS_PORT:-443}:443"
