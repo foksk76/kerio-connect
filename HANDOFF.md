@@ -6,10 +6,10 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-07-22 15:28:53 UTC
+- Updated: 2026-07-22 15:52:21 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `c3ca007` - Patch syslog target in entrypoint before Kerio Connect starts
+- Base HEAD: `d459d70` - Fix domain patching in mailserver.cfg, add licensing system spec
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 886MB`
 - Postfix service: `inactive`
@@ -32,21 +32,19 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Pending Change Areas
 
-- Build and runtime configuration changed.
+- Repository files updated.
 
 ## Pending Source Files
 
-- `docs/specs/kerio-licensing-system.md`
-- `scripts/entrypoint.sh`
+- `docs/specs/kerio-licensing-specification.md`
 
 ## Pending Diffstat
 
- 2 files changed, 661 insertions(+), 1 deletion(-)
+ 1 file changed, 600 insertions(+)
 
 ```
- docs/specs/kerio-licensing-system.md | 655 +++++++++++++++++++++++++++++++++++
- scripts/entrypoint.sh                |   7 +-
- 2 files changed, 661 insertions(+), 1 deletion(-)
+ docs/specs/kerio-licensing-specification.md | 600 ++++++++++++++++++++++++++++
+ 1 file changed, 600 insertions(+)
 ```
 
 ## Resume Notes
