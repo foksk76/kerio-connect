@@ -6,10 +6,10 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-07-22 15:52:21 UTC
+- Updated: 2026-07-22 15:54:32 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `d459d70` - Fix domain patching in mailserver.cfg, add licensing system spec
+- Base HEAD: `fcfe611` - Add licensing specification: map artifacts to 15 typical tasks
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 886MB`
 - Postfix service: `inactive`
@@ -36,15 +36,15 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Pending Source Files
 
-- `docs/specs/kerio-licensing-specification.md`
+- `.gitignore`
 
 ## Pending Diffstat
 
- 1 file changed, 600 insertions(+)
+ 1 file changed, 1 insertion(+)
 
 ```
- docs/specs/kerio-licensing-specification.md | 600 ++++++++++++++++++++++++++++
- 1 file changed, 600 insertions(+)
+ .gitignore | 1 +
+ 1 file changed, 1 insertion(+)
 ```
 
 ## Resume Notes
