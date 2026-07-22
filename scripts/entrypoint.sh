@@ -20,12 +20,17 @@ if [ -f "${cfg}" ]; then
       sed -i "s|<variable name=\"InternetHostname\">${current}</variable>|<variable name=\"InternetHostname\">${KERIO_DOMAIN}</variable>|" "${cfg}"
       echo "Patched InternetHostname to ${KERIO_DOMAIN}"
     fi
+    domcurrent="$(xmlstarlet sel -t -v "//*[local-name()=\"variable\"][@name=\"Domain\"][not(@name=\"DKIMDomainWhiteList\")]" "${cfg}" 2>/dev/null | head -1 || true)"
+    if [ -n "${domcurrent}" ] && [ "${domcurrent}" != "${KERIO_DOMAIN}" ]; then
+      sed -i "/<list name=\"Domain\">/,/<\/list>/s|<variable name=\"Domain\">${domcurrent}</variable>|<variable name=\"Domain\">${KERIO_DOMAIN}</variable>|" "${cfg}"
+      echo "Patched Domain in mailserver.cfg to ${KERIO_DOMAIN}"
+    fi
     ucfg="${KERIO_STATE_ROOT:-/var/lib/kerio/state}/users.cfg"
     if [ -f "${ucfg}" ]; then
       ucurrent="$(xmlstarlet sel -t -v "//*[local-name()=\"variable\"][@name=\"Domain\"]" "${ucfg}" 2>/dev/null | head -1 || true)"
       if [ -n "${ucurrent}" ] && [ "${ucurrent}" != "${KERIO_DOMAIN}" ]; then
         sed -i "s|<variable name=\"Domain\">${ucurrent}</variable>|<variable name=\"Domain\">${KERIO_DOMAIN}</variable>|g" "${ucfg}"
-        echo "Patched Domain to ${KERIO_DOMAIN}"
+        echo "Patched Domain in users.cfg to ${KERIO_DOMAIN}"
       fi
     fi
   fi

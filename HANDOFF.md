@@ -6,10 +6,10 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-07-22 13:54:15 UTC
+- Updated: 2026-07-22 15:28:53 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `ccde6c1` - Normalize lab domain to kerio.homelab
+- Base HEAD: `c3ca007` - Patch syslog target in entrypoint before Kerio Connect starts
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 886MB`
 - Postfix service: `inactive`
@@ -28,7 +28,7 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Compose Status
 
-- `kerio-connect`: Up About a minute (healthy), health `healthy`
+- `kerio-connect`: Up 2 hours (healthy), health `healthy`
 
 ## Pending Change Areas
 
@@ -36,19 +36,17 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Pending Source Files
 
-- `.env.example`
-- `docker-compose.yml`
+- `docs/specs/kerio-licensing-system.md`
 - `scripts/entrypoint.sh`
 
 ## Pending Diffstat
 
- 3 files changed, 27 insertions(+), 20 deletions(-)
+ 2 files changed, 661 insertions(+), 1 deletion(-)
 
 ```
- .env.example          |  1 +
- docker-compose.yml    |  1 +
- scripts/entrypoint.sh | 45 +++++++++++++++++++++++++--------------------
- 3 files changed, 27 insertions(+), 20 deletions(-)
+ docs/specs/kerio-licensing-system.md | 655 +++++++++++++++++++++++++++++++++++
+ scripts/entrypoint.sh                |   7 +-
+ 2 files changed, 661 insertions(+), 1 deletion(-)
 ```
 
 ## Resume Notes
