@@ -6,53 +6,54 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-07-22 13:09:01 UTC
+- Updated: 2026-07-22 13:28:24 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `63a764e` - Add AGENTS.md, fix documentation inconsistencies
+- Base HEAD: `89f72e2` - Normalize syslog hostname to elastic.homelab, add Lab Purpose to AGENTS.md
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 1GB`
 - Postfix service: `inactive`
-- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=467,fd=4))`
+- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=26232,fd=4))`
 
 ## Recorded Lab State
 
 - First run: `completed`
-- Admin account: `doge@kerio.lo`
-- Primary domain: `kerio.lo`
-- Hostname: `kerio.lo`
+- Admin account: `doge@kerio.homelab`
+- Primary domain: `kerio.homelab`
+- Hostname: `kerio.homelab`
 - Message store: `/opt/kerio/mailserver/store/`
 - License note: `Built-in trial link points to the legacy kerio.com trial URL and currently returns HTTP 404; use the manual GFI Free Trial URL from README.md.`
-- DNS note: `HomeLab DNS publishes kerio.lo as an internal A record only; no MX record is expected in this lab. External GFI hosts still resolve from inside the container, so the telemetry DNS warning is tracked separately.`
+- DNS note: `HomeLab DNS publishes kerio.homelab as an internal A record only; no MX record is expected in this lab. External GFI hosts still resolve from inside the container, so the telemetry DNS warning is tracked separately.`
 - Syslog note: `External Syslog is enabled for mail, operations, security, spam, and audit to elastic.homelab:5514 with application name kerio.`
 
 ## Compose Status
 
-- `kerio-connect`: Up 30 minutes (healthy), health `healthy`
+- `kerio-connect`: Up About a minute (healthy), health `healthy`
 
 ## Pending Change Areas
 
-- Commit-time doc automation updated.
 - Build and runtime configuration changed.
 - Project documentation refreshed.
 
 ## Pending Source Files
 
+- `.env.example`
 - `.lab-state.env`
-- `AGENTS.md`
 - `CHANGELOG.md`
-- `scripts/update-commit-docs.sh`
+- `docker-compose.yml`
+- `scripts/entrypoint.sh`
 
 ## Pending Diffstat
 
- 4 files changed, 12 insertions(+), 3 deletions(-)
+ 5 files changed, 35 insertions(+), 9 deletions(-)
 
 ```
- .lab-state.env                | 2 +-
- AGENTS.md                     | 9 +++++++++
- CHANGELOG.md                  | 2 +-
- scripts/update-commit-docs.sh | 2 +-
- 4 files changed, 12 insertions(+), 3 deletions(-)
+ .env.example          |  1 +
+ .lab-state.env        |  8 ++++----
+ CHANGELOG.md          | 10 +++++-----
+ docker-compose.yml    |  1 +
+ scripts/entrypoint.sh | 24 ++++++++++++++++++++++++
+ 5 files changed, 35 insertions(+), 9 deletions(-)
 ```
 
 ## Resume Notes

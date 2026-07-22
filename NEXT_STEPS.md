@@ -1,6 +1,6 @@
 # Next Steps
 
-Generated automatically on 2026-07-22 13:09:01 UTC.
+Generated automatically on 2026-07-22 13:28:24 UTC.
 
 ## Current Observed State
 
@@ -8,23 +8,23 @@ Generated automatically on 2026-07-22 13:09:01 UTC.
 - Branch: `main`
 - Kerio image: `kerio-connect-kerio-connect:latest 1GB`
 - Postfix service: `inactive`
-- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=467,fd=4))`
+- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=26232,fd=4))`
 - First run: `completed`
-- Admin account: `doge@kerio.lo`
-- Primary domain: `kerio.lo`
-- Hostname: `kerio.lo`
+- Admin account: `doge@kerio.homelab`
+- Primary domain: `kerio.homelab`
+- Hostname: `kerio.homelab`
 - Message store: `/opt/kerio/mailserver/store/`
 - License note: `Built-in trial link points to the legacy kerio.com trial URL and currently returns HTTP 404; use the manual GFI Free Trial URL from README.md.`
-- DNS note: `HomeLab DNS publishes kerio.lo as an internal A record only; no MX record is expected in this lab. External GFI hosts still resolve from inside the container, so the telemetry DNS warning is tracked separately.`
+- DNS note: `HomeLab DNS publishes kerio.homelab as an internal A record only; no MX record is expected in this lab. External GFI hosts still resolve from inside the container, so the telemetry DNS warning is tracked separately.`
 - Syslog note: `External Syslog is enabled for mail, operations, security, spam, and audit to elastic.homelab:5514 with application name kerio.`
 
 ## Compose Status
 
-- `kerio-connect`: Up 30 minutes (healthy), health `healthy`
+- `kerio-connect`: Up About a minute (healthy), health `healthy`
 
 ## Immediate Steps
 
-1. Sign in to `https://localhost:4040/admin` as `doge@kerio.lo` and continue post-setup tasks.
+1. Sign in to `https://localhost:4040/admin` as `doge@kerio.homelab` and continue post-setup tasks.
 2. Keep host port `25` free for Kerio by stopping or disabling the local MTA, or remap `KERIO_SMTP_PORT` in `.env`.
 3. Built-in trial link points to the legacy kerio.com trial URL and currently returns HTTP 404; use the manual GFI Free Trial URL from README.md.
 4. Verify the package layout inside the container or image:

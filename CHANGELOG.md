@@ -152,11 +152,11 @@ First stable release of the Debian 13 / Docker-based Kerio Connect lab.
 
 ### Operational Milestones
 
-- First-run setup completed successfully for `kerio.lo`.
-- Administrative mailbox `doge@kerio.lo` was created and retained across restarts.
+- First-run setup completed successfully for `kerio.homelab`.
+- Administrative mailbox `doge@kerio.homelab` was created and retained across restarts.
 - Trial licensing survived restart and the lab now starts in a registered state.
 - External Syslog was enabled for `mail`, `operations`, `security`, `spam`, and `audit` to `elastic.homelab:5514` with application name `kerio`.
-- End-to-end local mail delivery was validated with a test message delivered to `doge@kerio.lo`.
+- End-to-end local mail delivery was validated with a test message delivered to `doge@kerio.homelab`.
 
 ### Related Commits
 
@@ -188,8 +188,8 @@ First usable alpha of the Debian 13 / Docker-based Kerio Connect lab.
 
 ### Operational Milestones
 
-- Initial configuration completed for the lab domain `kerio.lo`.
-- Administrative account created: `doge@kerio.lo`.
+- Initial configuration completed for the lab domain `kerio.homelab`.
+- Administrative account created: `doge@kerio.homelab`.
 - Trial registration fallback was moved from the broken legacy `kerio.com` flow to the current GFI trial entry point.
 - Trial license activation was validated successfully and confirmed to survive a restart.
 - Alpha tag `v0.1.0-alpha.1` was published.
