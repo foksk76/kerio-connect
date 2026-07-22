@@ -6,10 +6,10 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-07-22 16:15:48 UTC
+- Updated: 2026-07-22 16:28:08 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `b840521` - Add trial license analysis: structure, validation flow, metadata
+- Base HEAD: `d672978` - Update licensing specs: correct addresses, add 21-field parseMainData mapping, document file parsing functions
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 886MB`
 - Postfix service: `inactive`
@@ -28,7 +28,7 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Compose Status
 
-- `kerio-connect`: Up 2 hours (healthy), health `healthy`
+- `kerio-connect`: Up 3 hours (healthy), health `healthy`
 
 ## Pending Change Areas
 
@@ -36,17 +36,15 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Pending Source Files
 
-- `docs/specs/kerio-licensing-system.md`
-- `docs/specs/kerio-trial-license.md`
+- `docs/reports/crypto-audit-2026-07-22.md`
 
 ## Pending Diffstat
 
- 2 files changed, 157 insertions(+), 47 deletions(-)
+ 1 file changed, 499 insertions(+)
 
 ```
- docs/specs/kerio-licensing-system.md | 154 +++++++++++++++++++++++++++--------
- docs/specs/kerio-trial-license.md    |  50 +++++++++---
- 2 files changed, 157 insertions(+), 47 deletions(-)
+ docs/reports/crypto-audit-2026-07-22.md | 499 ++++++++++++++++++++++++++++++++
+ 1 file changed, 499 insertions(+)
 ```
 
 ## Resume Notes
