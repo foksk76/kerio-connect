@@ -6,10 +6,10 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-07-22 15:54:32 UTC
+- Updated: 2026-07-22 15:58:31 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `fcfe611` - Add licensing specification: map artifacts to 15 typical tasks
+- Base HEAD: `a917197` - Add licence/ to .gitignore
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 886MB`
 - Postfix service: `inactive`
@@ -36,15 +36,15 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Pending Source Files
 
-- `.gitignore`
+- `docs/specs/kerio-trial-license.md`
 
 ## Pending Diffstat
 
- 1 file changed, 1 insertion(+)
+ 1 file changed, 252 insertions(+)
 
 ```
- .gitignore | 1 +
- 1 file changed, 1 insertion(+)
+ docs/specs/kerio-trial-license.md | 252 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 252 insertions(+)
 ```
 
 ## Resume Notes
