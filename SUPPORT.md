@@ -21,7 +21,7 @@ Please use GitHub Issues for:
 
 Please include:
 - operating system and version;
-- Docker / Python / Elasticsearch / Logstash / Grafana versions if relevant;
+- Docker and Docker Compose versions;
 - the exact step you are on;
 - the exact command you ran;
 - the exact error message;

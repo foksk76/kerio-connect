@@ -93,6 +93,7 @@ kerio-connect -> Kerio syslog -> kerio-logstash-project -> Elasticsearch / Kiban
 - `Dockerfile` собирает Debian 13 образ лабораторного Kerio Connect.
 - `docker-compose.yml` запускает локальный сервис Kerio Connect, порты, healthcheck и постоянные volumes.
 - `.env.example` описывает пример параметров сборки, порты, лимиты ресурсов и имена volumes.
+- `.lab-state.env` фиксирует статус первичной настройки, учётную запись администратора, домен и эксплуатационные заметки; читается скриптом `scripts/update-commit-docs.sh` при коммите.
 - `artifacts/` — опциональное локальное место для официального Kerio Connect `.deb` инсталлятора.
 - `scripts/` содержит entrypoint, healthcheck, подготовку состояния, настройку log-root и вспомогательные commit-doc инструменты.
 - `.github/workflows/docker-image.yml` запускает Docker Lab CI workflow.

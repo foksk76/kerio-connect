@@ -6,14 +6,14 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-04-07 14:36:28 UTC
+- Updated: 2026-07-22 13:02:37 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `6795f16` - Clarify README quick start wording
+- Base HEAD: `3366d59` - Release v0.2.2
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 1GB`
 - Postfix service: `inactive`
-- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=448,fd=4))`
+- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=467,fd=4))`
 
 ## Recorded Lab State
 
@@ -28,23 +28,32 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Compose Status
 
-- `kerio-connect`: Up 3 hours (healthy), health `healthy`
+- `kerio-connect`: Up 24 minutes (healthy), health `healthy`
 
 ## Pending Change Areas
 
+- Build and runtime configuration changed.
 - Project documentation refreshed.
 
 ## Pending Source Files
 
-- `CHANGELOG.md`
+- `.env.example`
+- `AGENTS.md`
+- `README.md`
+- `README.ru.md`
+- `SUPPORT.md`
 
 ## Pending Diffstat
 
- 1 file changed, 20 insertions(+)
+ 5 files changed, 109 insertions(+), 3 deletions(-)
 
 ```
- CHANGELOG.md | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ .env.example |   3 +-
+ AGENTS.md    | 105 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ README.md    |   1 +
+ README.ru.md |   1 +
+ SUPPORT.md   |   2 +-
+ 5 files changed, 109 insertions(+), 3 deletions(-)
 ```
 
 ## Resume Notes

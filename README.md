@@ -93,6 +93,7 @@ The related repositories complement each other:
 - `Dockerfile` builds the Debian 13 Kerio Connect lab image.
 - `docker-compose.yml` starts the local Kerio Connect service, ports, healthcheck, and persistent volumes.
 - `.env.example` documents example build parameters, ports, resource limits, and volume names.
+- `.lab-state.env` records first-run status, admin account, domain, and operational notes; read by `scripts/update-commit-docs.sh` at commit time.
 - `artifacts/` is the optional local location for an official Kerio Connect `.deb` installer.
 - `scripts/` contains entrypoint, healthcheck, state seeding, log-root handling, and commit-doc helpers.
 - `.github/workflows/docker-image.yml` runs the Docker lab CI workflow.
