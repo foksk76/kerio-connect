@@ -377,18 +377,30 @@ If you changed `KERIO_ADMIN_PORT` in `.env`, test that port instead of `4040`.
 **Symptoms**
 
 - The first-run wizard sends you to an old `kerio.com` URL that no longer works.
+- Webmail on port 443 returns `500 No License Found`.
 
 **What to check**
 
 - The embedded Kerio Connect UI may still reference a legacy vendor trial link.
+- Trial license `10512-ABL31-8WJ6H` expired 04 May 2026 — all extensions (Antivirus, ActiveSync, Anti-spam, Greylisting) are also expired.
 
 **How to fix it**
 
-Use the current manual trial entry point:
+The Admin UI at `https://kerio.homelab:4040/admin/#dashboard` offers three license registration paths on the Dashboard tile:
+
+| Option | When visible | What it does |
+|---|---|---|
+| **Become a registered trial user…** | Trial not yet activated | Opens trial registration wizard: trial license number + CAPTCHA → generates `license.key` |
+| **Install license…** | Always | Opens file upload dialog for a `.key` file. Note: *"License file must have the KEY suffix."* |
+| **Register product with a purchased license number…** | Always | Opens registration wizard: license number + security code → generates `license.key` |
+
+To renew with a fresh trial, get a trial number from:
 
 ```text
 https://gfi.ai/products-and-solutions/email-and-messaging-solutions/kerioconnect/free-trial
 ```
+
+Then register via "Become a registered trial user…" in the Admin UI.
 
 ## What This Project Does Not Do
 

@@ -204,6 +204,20 @@ curl -sk -X POST https://kerio.homelab:4040/admin/api/jsonrpc \
 
 The lab runs on a trial license (25 users max). `Users.create` returns error code `1003` ("user count license exceeded") when the limit is reached. Delete unused users before creating new ones.
 
+### License registration via Web UI
+
+The Admin UI at `https://kerio.homelab:4040/admin/#dashboard` shows three license options on the Dashboard tile:
+
+| Option | When visible | What it does |
+|---|---|---|
+| **Become a registered trial user…** | Trial not yet activated | Opens trial registration wizard: trial license number + CAPTCHA → generates `license.key` |
+| **Install license…** | Always | Opens file upload dialog for a `.key` file. Note: *"License file must have the KEY suffix."* |
+| **Register product with a purchased license number…** | Always | Opens registration wizard: license number + security code → generates `license.key` |
+
+Current trial number (`10512-ABL31-8WJ6H`) expired 04 May 2026 — all extensions (Antivirus, ActiveSync, Anti-spam, Greylisting) show **Expired**. Webmail on port 443 returns `500 No License Found`.
+
+**Path to renew:** Either upload a valid `.key` via "Install license…", or get a fresh trial number from `https://gfi.ai/products-and-solutions/email-and-messaging-solutions/kerioconnect/free-trial` and register via "Become a registered trial user…".
+
 ## Documentation Conventions
 
 - `README.md` is the canonical English source; `README.ru.md` is a Russian translation that must not document separate behavior.

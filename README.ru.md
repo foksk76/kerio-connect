@@ -377,18 +377,30 @@ docker compose exec -T kerio-connect /usr/local/bin/healthcheck.sh
 **Симптомы**
 
 - Мастер первичной настройки отправляет на старый URL `kerio.com`, который больше не работает.
+- Webmail на порту 443 возвращает `500 No License Found`.
 
 **Что проверить**
 
 - Встроенный UI Kerio Connect может всё еще ссылаться на устаревший trial URL вендора.
+- Trial-лицензия `10512-ABL31-8WJ6H` истекла 04 мая 2026 — все расширения (Antivirus, ActiveSync, Anti-spam, Greylisting) также истекли.
 
 **Как исправить**
 
-Используйте текущую ручную точку входа для trial:
+Admin UI на `https://kerio.homelab:4040/admin/#dashboard` предлагает три пути регистрации лицензии на панели Dashboard:
+
+| Опция | Когда видна | Что делает |
+|---|---|---|
+| **Become a registered trial user…** | Trial ещё не активирован | Открывает мастер регистрации trial: номер trial-лицензии + CAPTCHA → генерирует `license.key` |
+| **Install license…** | Всегда | Открывает диалог загрузки файла `.key`. Примечание: *"License file must have the KEY suffix."* |
+| **Register product with a purchased license number…** | Всегда | Открывает мастер регистрации: номер лицензии + security code → генерирует `license.key` |
+
+Для обновления trial-лицензии получите новый trial-номер:
 
 ```text
 https://gfi.ai/products-and-solutions/email-and-messaging-solutions/kerioconnect/free-trial
 ```
+
+Зарегистрируйте его через «Become a registered trial user…» в Admin UI.
 
 ## Что проект не делает
 

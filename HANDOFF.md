@@ -6,10 +6,10 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-07-23 15:36:45 UTC
+- Updated: 2026-07-23 15:50:17 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `8260f33` - Add cryptographic audit report: MD5+RSA-1024+PKCS#1v1.5 analysis with verification artifacts
+- Base HEAD: `b78dce9` - Add Kerio Connect Administration API docs to AGENTS.md
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 886MB`
 - Postfix service: `inactive`
@@ -28,23 +28,27 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Compose Status
 
-- `kerio-connect`: Up 14 minutes (healthy), health `healthy`
+- `kerio-connect`: Up 28 minutes (healthy), health `healthy`
 
 ## Pending Change Areas
 
-- Repository files updated.
+- Project documentation refreshed.
 
 ## Pending Source Files
 
 - `AGENTS.md`
+- `README.md`
+- `README.ru.md`
 
 ## Pending Diffstat
 
- 1 file changed, 98 insertions(+)
+ 3 files changed, 40 insertions(+), 2 deletions(-)
 
 ```
- AGENTS.md | 98 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 98 insertions(+)
+ AGENTS.md    | 14 ++++++++++++++
+ README.md    | 14 +++++++++++++-
+ README.ru.md | 14 +++++++++++++-
+ 3 files changed, 40 insertions(+), 2 deletions(-)
 ```
 
 ## Resume Notes
