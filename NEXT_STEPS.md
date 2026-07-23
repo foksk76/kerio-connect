@@ -1,6 +1,6 @@
 # Next Steps
 
-Generated automatically on 2026-07-22 16:28:08 UTC.
+Generated automatically on 2026-07-23 15:36:45 UTC.
 
 ## Current Observed State
 
@@ -8,7 +8,7 @@ Generated automatically on 2026-07-22 16:28:08 UTC.
 - Branch: `main`
 - Kerio image: `kerio-connect-kerio-connect:latest 886MB`
 - Postfix service: `inactive`
-- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=38355,fd=4))`
+- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=24403,fd=4))`
 - First run: `completed`
 - Admin account: `doge@kerio.homelab`
 - Primary domain: `kerio.homelab`
@@ -20,7 +20,7 @@ Generated automatically on 2026-07-22 16:28:08 UTC.
 
 ## Compose Status
 
-- `kerio-connect`: Up 3 hours (healthy), health `healthy`
+- `kerio-connect`: Up 14 minutes (healthy), health `healthy`
 
 ## Immediate Steps
 

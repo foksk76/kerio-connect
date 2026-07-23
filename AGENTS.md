@@ -106,6 +106,104 @@ ssh root@grafana.homelab    # grafana lab
 - Uses high-numbered ports (44040, 44443, 40025, etc.) to avoid host conflicts.
 - Waits up to 5 minutes for healthy status, runs healthcheck, then tears down with `docker compose down -v`.
 
+## Kerio Connect Administration API
+
+JSON-RPC 2.0 API on port `4040`. Full reference: https://manuals.gfi.com/en/kerio/api/connect/admin/reference/
+
+### Authentication
+
+```bash
+# Login — returns session token + cookie
+curl -sk -X POST https://kerio.homelab:4040/admin/api/jsonrpc \
+  -H "Content-Type: application/json" \
+  -c /tmp/kerio-cookies.txt \
+  -d '{
+    "jsonrpc":"2.0",
+    "id":1,
+    "method":"Session.login",
+    "params":{
+      "userName":"Admin",
+      "password":"",
+      "application":{"name":"Lab API","vendor":"Lab","version":"1.0"}
+    }
+  }'
+# Response: {"result":{"token":"<token>"}}
+```
+
+**Important:** Built-in admin `Admin` (empty password) is available when `BuiltInAdminEnabled=1` in `mailserver.cfg`. The `doge@kerio.homelab` account requires its own password.
+
+### Session management
+
+- Every subsequent request must include `"token":"<token>"` in the JSON body **and** the `X-Token` HTTP header.
+- Session cookie (`SESSION_CONNECT_WEBADMIN`) is returned on login; pass it via `-b /tmp/kerio-cookies.txt`.
+- Sessions expire after inactivity; re-login if you get `code: -32001`.
+
+### Key API methods
+
+| Method | Purpose |
+|---|---|
+| `Session.login` | Authenticate, get token |
+| `Session.logout` | End session |
+| `Users.get` | List users in a domain |
+| `Users.create` | Create new users |
+| `Users.set` | Update user properties |
+| `Users.remove` | Delete users |
+| `Domains.get` | List domains |
+| `ServerInfo.get` | Server version, features, license |
+
+### Common patterns
+
+**Get domain ID:**
+```bash
+curl -sk -X POST https://kerio.homelab:4040/admin/api/jsonrpc \
+  -H "Content-Type: application/json" -H "X-Token: $TOKEN" -b /tmp/kerio-cookies.txt \
+  -d '{"jsonrpc":"2.0","id":2,"token":"'"$TOKEN"'","method":"Domains.get","params":{"query":{}}}'
+# Domain ID format: keriodb://domain/<guid>
+```
+
+**Create user:**
+```bash
+curl -sk -X POST https://kerio.homelab:4040/admin/api/jsonrpc \
+  -H "Content-Type: application/json" -H "X-Token: $TOKEN" -b /tmp/kerio-cookies.txt \
+  -d '{
+    "jsonrpc":"2.0","id":3,"token":"'"$TOKEN"'",
+    "method":"Users.create",
+    "params":{"users":[{
+      "domainId":"'"$DOMAIN_ID"'",
+      "loginName":"test.user",
+      "fullName":"Test User",
+      "password":"test1234",
+      "isEnabled":true
+    }]}
+  }'
+# Required fields: domainId, loginName, password
+```
+
+**List users:**
+```bash
+curl -sk -X POST https://kerio.homelab:4040/admin/api/jsonrpc \
+  -H "Content-Type: application/json" -H "X-Token: $TOKEN" -b /tmp/kerio-cookies.txt \
+  -d '{"jsonrpc":"2.0","id":4,"token":"'"$TOKEN"'","method":"Users.get","params":{"query":{},"domainId":"'"$DOMAIN_ID"'"}}'
+```
+
+**Remove users:**
+```bash
+curl -sk -X POST https://kerio.homelab:4040/admin/api/jsonrpc \
+  -H "Content-Type: application/json" -H "X-Token: $TOKEN" -b /tmp/kerio-cookies.txt \
+  -d '{
+    "jsonrpc":"2.0","id":5,"token":"'"$TOKEN"'",
+    "method":"Users.remove",
+    "params":{"requests":[
+      {"userId":"<user-id>","method":"UDeleteFolder","removeReferences":false,"targetUserId":""}
+    ]}
+  }'
+# Method values: UDeleteUser, UDeleteFolder, UMoveFolder
+```
+
+### License limits
+
+The lab runs on a trial license (25 users max). `Users.create` returns error code `1003` ("user count license exceeded") when the limit is reached. Delete unused users before creating new ones.
+
 ## Documentation Conventions
 
 - `README.md` is the canonical English source; `README.ru.md` is a Russian translation that must not document separate behavior.

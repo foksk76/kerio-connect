@@ -6,14 +6,14 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Current Snapshot
 
-- Updated: 2026-07-22 16:28:08 UTC
+- Updated: 2026-07-23 15:36:45 UTC
 - Repository: `/root/kerio-connect`
 - Branch: `main`
-- Base HEAD: `d672978` - Update licensing specs: correct addresses, add 21-field parseMainData mapping, document file parsing functions
+- Base HEAD: `8260f33` - Add cryptographic audit report: MD5+RSA-1024+PKCS#1v1.5 analysis with verification artifacts
 - Remote: `origin` - `git@github.com:foksk76/kerio-connect.git`
 - Kerio image: `kerio-connect-kerio-connect:latest 886MB`
 - Postfix service: `inactive`
-- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=38355,fd=4))`
+- Host port 25: `busy: LISTEN 0      4096         0.0.0.0:25        0.0.0.0:*    users:(("docker-proxy",pid=24403,fd=4))`
 
 ## Recorded Lab State
 
@@ -28,7 +28,7 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Compose Status
 
-- `kerio-connect`: Up 3 hours (healthy), health `healthy`
+- `kerio-connect`: Up 14 minutes (healthy), health `healthy`
 
 ## Pending Change Areas
 
@@ -36,15 +36,15 @@ This file captures the current working state of the Kerio Connect lab repository
 
 ## Pending Source Files
 
-- `docs/reports/crypto-audit-2026-07-22.md`
+- `AGENTS.md`
 
 ## Pending Diffstat
 
- 1 file changed, 499 insertions(+)
+ 1 file changed, 98 insertions(+)
 
 ```
- docs/reports/crypto-audit-2026-07-22.md | 499 ++++++++++++++++++++++++++++++++
- 1 file changed, 499 insertions(+)
+ AGENTS.md | 98 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 98 insertions(+)
 ```
 
 ## Resume Notes
